@@ -670,3 +670,23 @@ table tbody tr td:last-child {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
 }
+footer {
+    background: var(--dark-gray);
+    border-top: 1px solid var(--wine);
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 5rem;
+}
+
+footer p {
+    color: var(--light-gray);
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+footer p:first-child {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--wine);
+    margin-bottom: 0.5rem;
+}
