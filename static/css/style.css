@@ -26,3 +26,37 @@ body {
     color: var(--white);
     line-height: 1.6;
 }
+header {
+    background: rgba(13, 13, 13, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--wine);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(114, 47, 55, 0.3);
+}
+
+nav {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--wine);
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: lowercase;
+    transition: color 0.3s ease;
+}
+
+.logo:hover {
+    color: var(--light-wine);
+}
