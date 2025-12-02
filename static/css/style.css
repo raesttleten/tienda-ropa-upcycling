@@ -117,7 +117,7 @@ nav {
 }
 .hero {
     height: 70vh;
-    background: url('/static/images/hero/fondo-vintage.jpg') center/cover no-repeat;
+    background: url('/static/images/hero/fondo-vintage.png') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -125,4 +125,20 @@ nav {
     text-align: center;
     position: relative;
     padding: 2rem;
+}
+.hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--white);
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero p {
+    font-size: 1.5rem;
+    color: var(--cream);
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
 }
