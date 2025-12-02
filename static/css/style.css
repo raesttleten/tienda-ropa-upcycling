@@ -90,3 +90,28 @@ nav {
     color: var(--white);
     transform: scale(1.1);
 }
+.nav-icons {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.nav-icons a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid transparent;
+}
+
+.nav-icons a:hover {
+    color: var(--wine);
+    border-color: var(--wine);
+    transform: scale(1.1);
+}
