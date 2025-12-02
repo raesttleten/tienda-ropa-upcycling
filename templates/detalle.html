@@ -12,18 +12,41 @@
         <nav>
             <a href="/" class="logo">thriftstorecol</a>
 
-            <form action="/" method="get" class="search-bar">
-                <input type="text" name="busqueda" placeholder="Buscar tu próxima pieza favorita...">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-
             <div class="nav-icons">
+                <form action="/" method="get" class="search-bar">
+                    <input type="text" name="busqueda" placeholder="Buscar...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
                 <a href="/favoritos"><i class="fas fa-heart"></i></a>
                 <a href="/carrito"><i class="fas fa-shopping-bag"></i></a>
                 <a href="/admin"><i class="fas fa-user-shield"></i></a>
             </div>
         </nav>
     </header>
+
+    <div class="categorias">
+        <div class="categorias-inner">
+            <a href="/" class="categoria-btn">
+                <i class="fas fa-sparkles"></i> Todo
+            </a>
+            <a href="/categoria/Camisas" class="categoria-btn">
+                <i class="fas fa-tshirt"></i> Camisas
+            </a>
+            <a href="/categoria/Pantalones" class="categoria-btn">
+                <i class="fas fa-jeans"></i> Pantalones
+            </a>
+            <a href="/categoria/Faldas" class="categoria-btn">
+                <i class="fas fa-vest"></i> Faldas
+            </a>
+            <a href="/categoria/Bolsos" class="categoria-btn">
+                <i class="fas fa-bag-shopping"></i> Bolsos
+            </a>
+            <a href="/categoria/Accesorios" class="categoria-btn">
+                <i class="fas fa-gem"></i> Accesorios
+            </a>
+        </div>
+    </div>
 
     <main class="detalle-container">
         <div class="detalle-producto">
@@ -40,7 +63,7 @@
                     <i class="fas fa-box"></i>
                     {% if producto.stock > 0 %}
                         {% if producto.stock == 1 %}
-                            ✨ Pieza única disponible
+                            Pieza única disponible
                         {% else %}
                             {{ producto.stock }} disponibles
                         {% endif %}
@@ -62,12 +85,12 @@
                     </button>
                 </div>
 
-                <div style="margin-top: 2rem; padding: 1.8rem; background: rgba(225, 190, 231, 0.1); border-radius: 15px; border: 2px solid var(--lavender);">
-                    <h4 style="margin-bottom: 1rem; color: var(--lavender); font-size: 1.1rem;">
+                <div style="margin-top: 2rem; padding: 1.8rem; background: rgba(114, 47, 55, 0.1); border-radius: 8px; border: 1px solid var(--wine);">
+                    <h4 style="margin-bottom: 1rem; color: var(--light-wine); font-size: 1.1rem;">
                         <i class="fas fa-heart"></i> Moda Preloved con Historia
                     </h4>
-                    <p style="color: var(--text-gray); font-size: 0.95rem; line-height: 1.7;">
-                        Cada prenda en thriftstorecol es única y ha sido cuidadosamente seleccionada. Al comprarla, le das una segunda vida a la moda y ayudas al planeta. 🌍✨
+                    <p style="color: var(--light-gray); font-size: 0.95rem; line-height: 1.7;">
+                        Cada prenda en thriftstorecol es única y ha sido cuidadosamente seleccionada. Al comprarla, le das una segunda vida a la moda y ayudas al planeta.
                     </p>
                 </div>
             </div>
@@ -75,7 +98,7 @@
 
         {% if productos_relacionados %}
         <section class="productos-relacionados">
-            <h3>✿ También te puede encantar ✿</h3>
+            <h3>También te puede encantar</h3>
             <div class="productos-grid">
                 {% for relacionado in productos_relacionados %}
                 <div class="producto-card">
@@ -102,7 +125,7 @@
 
     <footer>
         <p>thriftstorecol</p>
-        <p style="margin-top: 0.5rem; color: var(--lavender);">Moda Vintage · Sostenible · Única</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
 </body>
 </html>
