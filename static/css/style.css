@@ -142,3 +142,53 @@ nav {
     letter-spacing: 2px;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
 }
+main {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.categorias {
+    background: var(--dark-gray);
+    border-bottom: 1px solid var(--wine);
+    padding: 1rem 0;
+    position: sticky;
+    top: 73px;
+    z-index: 999;
+}
+
+.categorias-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.categoria-btn {
+    background: transparent;
+    border: 1px solid var(--wine);
+    color: var(--white);
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.categoria-btn:hover,
+.categoria-btn.active {
+    background: var(--wine);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(114, 47, 55, 0.4);
+}
+
+.categoria-btn i {
+    font-size: 0.85rem;
+}
