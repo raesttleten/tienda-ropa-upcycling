@@ -263,3 +263,69 @@ main {
 .badge.oferta {
     background: var(--light-wine);
 }
+.producto-info {
+    padding: 1.5rem;
+    background: var(--dark-gray);
+}
+
+.producto-card .categoria {
+    color: var(--light-wine);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.producto-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin: 0.5rem 0;
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.producto-card .talla {
+    color: var(--light-gray);
+    font-size: 0.85rem;
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.producto-card .precio {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--wine);
+    margin: 1rem 0;
+    letter-spacing: 1px;
+}
+
+.producto-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    flex: 1;
+    background: var(--wine);
+    color: var(--white);
+    border: none;
+    padding: 0.9rem;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--dark-wine);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(114, 47, 55, 0.4);
+}
