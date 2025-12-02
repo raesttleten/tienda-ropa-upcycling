@@ -69,7 +69,7 @@
                             <span class="categoria">{{ producto.categoria }}</span>
                             <h4>{{ producto.nombre }}</h4>
                             <span class="talla">Talla: {{ producto.talla }}</span>
-                            <p class="precio">${{ "%.2f"|format(producto.precio) }}</p>
+                            <p class="precio">${{ "{:,.0f}".format(producto.precio) }} COP</p>
 
                             <div class="producto-actions">
                                 <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>

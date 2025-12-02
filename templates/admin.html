@@ -31,7 +31,7 @@
             </div>
             <div class="stat-card">
                 <h3>Valor Inventario</h3>
-                <div class="numero">${{ "%.2f"|format(valor_inventario) }}</div>
+                <div class="numero">${{ "{:,.0f}".format(valor_inventario) }} COP</div>
             </div>
         </div>
 
@@ -101,7 +101,7 @@
                         </td>
                         <td><strong>{{ producto.nombre }}</strong></td>
                         <td><span style="color: var(--light-wine);">{{ producto.categoria }}</span></td>
-                        <td style="color: var(--wine); font-weight: 700; font-size: 1.1rem;">${{ "%.2f"|format(producto.precio) }}</td>
+                        <td style="color: var(--wine); font-weight: 700; font-size: 1.1rem;">${{ "{:,.0f}".format(producto.precio) }} COP</td>
                         <td>{{ producto.talla }}</td>
                         <td>
                             {% if producto.stock == 0 %}
