@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ producto.nombre }} - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+
+            <form action="/" method="get" class="search-bar">
+                <input type="text" name="busqueda" placeholder="Buscar tu próxima pieza favorita...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            <div class="nav-icons">
+                <a href="/favoritos"><i class="fas fa-heart"></i></a>
+                <a href="/carrito"><i class="fas fa-shopping-bag"></i></a>
+                <a href="/admin"><i class="fas fa-user-shield"></i></a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="detalle-container">
+        <div class="detalle-producto">
+            <div>
+                <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=1000&fit=crop'">
+            </div>
+
+            <div class="detalle-info">
+                <span class="categoria">{{ producto.categoria }}</span>
+                <h2>{{ producto.nombre }}</h2>
+                <p class="descripcion">{{ producto.descripcion }}</p>
+                <p class="precio">${{ "%.2f"|format(producto.precio) }}</p>
+                <p class="stock">
+                    <i class="fas fa-box"></i>
+                    {% if producto.stock > 0 %}
+                        {% if producto.stock == 1 %}
+                            ✨ Pieza única disponible
+                        {% else %}
+                            {{ producto.stock }} disponibles
+                        {% endif %}
+                    {% else %}
+                        Agotado
+                    {% endif %}
+                </p>
+
+                <div class="size-selector">
+                    <h4><i class="fas fa-ruler"></i> Talla</h4>
+                    <div class="size-options">
+                        <button class="size-option active">{{ producto.talla }}</button>
+                    </div>
+                </div>
+
+                <div class="detalle-actions">
+                    <button class="btn-comprar">
+                        <i class="fas fa-shopping-cart"></i> AGREGAR AL CARRITO
+                    </button>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.8rem; background: rgba(225, 190, 231, 0.1); border-radius: 15px; border: 2px solid var(--lavender);">
+                    <h4 style="margin-bottom: 1rem; color: var(--lavender); font-size: 1.1rem;">
+                        <i class="fas fa-heart"></i> Moda Preloved con Historia
+                    </h4>
+                    <p style="color: var(--text-gray); font-size: 0.95rem; line-height: 1.7;">
+                        Cada prenda en thriftstorecol es única y ha sido cuidadosamente seleccionada. Al comprarla, le das una segunda vida a la moda y ayudas al planeta. 🌍✨
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {% if productos_relacionados %}
+        <section class="productos-relacionados">
+            <h3>✿ También te puede encantar ✿</h3>
+            <div class="productos-grid">
+                {% for relacionado in productos_relacionados %}
+                <div class="producto-card">
+                    <div class="producto-img-container">
+                        <img src="{{ relacionado.imagen_url }}" alt="{{ relacionado.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
+                    </div>
+                    <div class="producto-info">
+                        <span class="categoria">{{ relacionado.categoria }}</span>
+                        <h4>{{ relacionado.nombre }}</h4>
+                        <span class="talla">Talla: {{ relacionado.talla }}</span>
+                        <p class="precio">${{ "%.2f"|format(relacionado.precio) }}</p>
+                        <div class="producto-actions">
+                            <a href="/producto/{{ relacionado.id }}" class="btn-primary">
+                                <i class="fas fa-eye"></i> Ver más
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem; color: var(--lavender);">Moda Vintage · Sostenible · Única</p>
+    </footer>
+</body>
+</html>
