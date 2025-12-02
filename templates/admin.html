@@ -38,7 +38,7 @@
         <section class="agregar-producto">
             <h2>Agregar Nueva Pieza</h2>
             <form method="POST" action="/admin/agregar">
-                <input type="text" name="nombre" placeholder="Nombre del producto *" required>
+                <input type="text" step="0.01" name="nombre" placeholder="Nombre del producto *" required>
 
                 <select name="categoria" required>
                     <option value="">Seleccionar categoría *</option>
@@ -127,7 +127,7 @@
             </table>
             {% else %}
             <p style="text-align: center; color: var(--light-gray); padding: 3rem;">
-                No hay productos. Agrega tu primera pieza vintage arriba.
+                No hay productos. Agrega tu primera prenda.
             </p>
             {% endif %}
         </section>
