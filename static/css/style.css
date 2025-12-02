@@ -329,3 +329,24 @@ main {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(114, 47, 55, 0.4);
 }
+.no-productos {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem 2rem;
+    background: var(--dark-gray);
+    border-radius: 8px;
+    border: 1px dashed var(--wine);
+}
+
+.no-productos h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+}
+
+.no-productos p {
+    color: var(--light-gray);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
