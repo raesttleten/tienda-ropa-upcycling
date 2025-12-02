@@ -12,12 +12,12 @@
         <nav>
             <a href="/" class="logo">thriftstorecol</a>
 
-            <form action="/" method="get" class="search-bar">
-                <input type="text" name="busqueda" placeholder="Buscar tu próxima pieza favorita..." value="{{ busqueda or '' }}">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-
             <div class="nav-icons">
+                <form action="/" method="get" class="search-bar">
+                    <input type="text" name="busqueda" placeholder="Buscar..." value="{{ busqueda or '' }}">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
                 <a href="/favoritos" title="Favoritos">
                     <i class="fas fa-heart"></i>
                 </a>
@@ -31,13 +31,8 @@
         </nav>
     </header>
 
-    <main>
-        <section class="hero">
-            <h2>Vintage. Único. Tuyo.</h2>
-            <p>✨ Descubre moda preloved con historia y estilo ✨</p>
-        </section>
-
-        <section class="categorias">
+    <div class="categorias">
+        <div class="categorias-inner">
             <a href="/" class="categoria-btn {% if not categoria_actual %}active{% endif %}">
                 <i class="fas fa-sparkles"></i> Todo
             </a>
@@ -56,8 +51,15 @@
             <a href="/categoria/Accesorios" class="categoria-btn {% if categoria_actual == 'Accesorios' %}active{% endif %}">
                 <i class="fas fa-gem"></i> Accesorios
             </a>
-        </section>
+        </div>
+    </div>
 
+    <section class="hero">
+        <h2>Vintage. Único. Tuyo.</h2>
+        <p>Descubre moda preloved con historia y estilo</p>
+    </section>
+
+    <main>
         <section class="productos">
             <div class="productos-grid">
                 {% if productos %}
@@ -92,7 +94,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="no-productos">
-                        <h3>🌸 No se encontraron productos</h3>
+                        <h3>No se encontraron productos</h3>
                         <p>{% if busqueda %}No hay resultados para "{{ busqueda }}"{% else %}Aún no hay productos disponibles{% endif %}</p>
                         <a href="/admin" class="btn-primary" style="display: inline-block; margin-top: 2rem;">
                             <i class="fas fa-plus"></i> Agregar Productos
@@ -105,7 +107,7 @@
 
     <footer>
         <p>thriftstorecol</p>
-        <p style="margin-top: 0.5rem; color: var(--lavender);">Moda Vintage · Sostenible · Única</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
 </body>
 </html>
