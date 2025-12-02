@@ -42,10 +42,10 @@
 
                 <select name="categoria" required>
                     <option value="">Seleccionar categoría *</option>
-                    <option value="Camiseta">Camiseta</option>
-                    <option value="Pantalon">Pantalón</option>
-                    <option value="Chaqueta">Chaqueta</option>
-                    <option value="Vestido">Vestido</option>
+                    <option value="Camisas">Camisas</option>
+                    <option value="Pantalones">Pantalones</option>
+                    <option value="Faldas">Faldas</option>
+                    <option value="Bolsos">Bolsos</option>
                     <option value="Accesorios">Accesorios</option>
                     <option value="Otro">Otro</option>
                 </select>
@@ -74,12 +74,12 @@
                 </button>
             </form>
 
-            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(225, 190, 231, 0.1); border-radius: 15px; border: 2px solid var(--lavender);">
-                <h4 style="color: var(--lavender); margin-bottom: 1rem;">
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(114, 47, 55, 0.1); border-radius: 8px; border: 1px solid var(--wine);">
+                <h4 style="color: var(--light-wine); margin-bottom: 1rem;">
                     <i class="fas fa-info-circle"></i> Cómo agregar imágenes:
                 </h4>
-                <ol style="color: var(--text-gray); line-height: 1.8; padding-left: 1.5rem;">
-                    <li>Sube tu foto a <a href="https://imgur.com/upload" target="_blank" style="color: var(--purple); font-weight: 600;">Imgur</a> o <a href="https://postimages.org/" target="_blank" style="color: var(--purple); font-weight: 600;">PostImages</a></li>
+                <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
+                    <li>Sube tu foto a <a href="https://imgur.com/upload" target="_blank" style="color: var(--wine); font-weight: 600;">Imgur</a> o <a href="https://postimages.org/" target="_blank" style="color: var(--wine); font-weight: 600;">PostImages</a></li>
                     <li>Copia el enlace directo de la imagen</li>
                     <li>Pégalo en el campo "URL de la imagen"</li>
                 </ol>
@@ -108,28 +108,28 @@
                         <td><strong>#{{ producto.id }}</strong></td>
                         <td>
                             <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}"
-                                 style="width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 2px solid var(--lavender);"
+                                 style="width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid var(--wine);"
                                  onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=100&h=100&fit=crop'">
                         </td>
                         <td><strong>{{ producto.nombre }}</strong></td>
-                        <td><span style="color: var(--lavender);">{{ producto.categoria }}</span></td>
-                        <td style="color: var(--blush); font-weight: 700; font-size: 1.1rem;">${{ "%.2f"|format(producto.precio) }}</td>
+                        <td><span style="color: var(--light-wine);">{{ producto.categoria }}</span></td>
+                        <td style="color: var(--wine); font-weight: 700; font-size: 1.1rem;">${{ "%.2f"|format(producto.precio) }}</td>
                         <td>{{ producto.talla }}</td>
                         <td>
                             {% if producto.stock == 0 %}
-                                <span style="color: #FF1744;">Agotado</span>
+                                <span style="color: #8B0000;">Agotado</span>
                             {% elif producto.stock == 1 %}
-                                <span style="color: var(--mint);">1 (única)</span>
+                                <span style="color: var(--light-wine);">1 (única)</span>
                             {% elif producto.stock < 3 %}
-                                <span style="color: var(--mint);">{{ producto.stock }}</span>
+                                <span style="color: var(--light-wine);">{{ producto.stock }}</span>
                             {% else %}
-                                <span style="color: var(--sage);">{{ producto.stock }}</span>
+                                <span style="color: var(--light-gray);">{{ producto.stock }}</span>
                             {% endif %}
                         </td>
                         <td>
                             <a href="/admin/eliminar/{{ producto.id }}"
                                class="btn-delete"
-                               onclick="return confirm('⚠️ ¿Seguro que quieres eliminar este producto?')">
+                               onclick='return confirm("¿Seguro que quieres eliminar este producto?")'>
                                 <i class="fas fa-trash"></i> Eliminar
                             </a>
                         </td>
@@ -138,8 +138,8 @@
                 </tbody>
             </table>
             {% else %}
-            <p style="text-align: center; color: var(--text-gray); padding: 3rem;">
-                No hay productos. ¡Agrega tu primera pieza vintage arriba! 🌸
+            <p style="text-align: center; color: var(--light-gray); padding: 3rem;">
+                No hay productos. Agrega tu primera pieza vintage arriba.
             </p>
             {% endif %}
         </section>
