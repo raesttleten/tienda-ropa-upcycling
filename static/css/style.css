@@ -479,3 +479,114 @@ main {
     margin-bottom: 3rem;
     font-weight: 700;
 }
+.admin-container {
+    max-width: 1600px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--dark-gray);
+    border: 1px solid var(--wine);
+    border-radius: 8px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(114, 47, 55, 0.3);
+}
+
+.stat-card h3 {
+    color: var(--light-gray);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card .numero {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    color: var(--wine);
+    letter-spacing: 2px;
+}
+
+.agregar-producto {
+    background: var(--dark-gray);
+    border: 1px solid var(--wine);
+    padding: 3rem;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+}
+
+.agregar-producto h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--cream);
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+}
+
+.agregar-producto form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.agregar-producto input,
+.agregar-producto textarea,
+.agregar-producto select {
+    background: var(--medium-gray);
+    border: 1px solid var(--wine);
+    color: var(--white);
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.agregar-producto input:focus,
+.agregar-producto textarea:focus,
+.agregar-producto select:focus {
+    outline: none;
+    border-color: var(--light-wine);
+    box-shadow: 0 0 15px rgba(114, 47, 55, 0.3);
+}
+
+.agregar-producto textarea {
+    grid-column: 1 / -1;
+    min-height: 120px;
+    resize: vertical;
+}
+
+.agregar-producto button {
+    grid-column: 1 / -1;
+    background: var(--wine);
+    color: var(--white);
+    border: none;
+    padding: 1.2rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.agregar-producto button:hover {
+    background: var(--dark-wine);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(114, 47, 55, 0.4);
+}
