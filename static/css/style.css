@@ -350,3 +350,120 @@ main {
     font-size: 1.1rem;
     margin-bottom: 2rem;
 }
+.detalle-container {
+    max-width: 1400px;
+    margin: 3rem auto;
+    padding: 2rem;
+}
+
+.detalle-producto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    background: var(--dark-gray);
+    padding: 3rem;
+    border-radius: 8px;
+    border: 1px solid var(--wine);
+}
+
+.detalle-producto img {
+    width: 100%;
+    height: 700px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.detalle-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.detalle-info .categoria {
+    color: var(--light-wine);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.detalle-info .descripcion {
+    font-size: 1.1rem;
+    color: var(--light-gray);
+    margin: 1.5rem 0;
+    line-height: 1.8;
+}
+
+.detalle-info .precio {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    color: var(--wine);
+    margin: 1.5rem 0;
+    letter-spacing: 2px;
+}
+
+.detalle-info .stock {
+    color: var(--light-gray);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.size-selector {
+    margin: 2rem 0;
+}
+
+.size-selector h4 {
+    color: var(--cream);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.size-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.size-option {
+    background: var(--medium-gray);
+    border: 1px solid var(--wine);
+    color: var(--white);
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.size-option:hover,
+.size-option.active {
+    background: var(--wine);
+    transform: scale(1.05);
+}
+
+.btn-comprar {
+    background: var(--wine);
+    color: var(--white);
+    border: none;
+    padding: 1.2rem 3rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    width: 100%;
+    margin: 2rem 0;
+    transition: all 0.3s ease;
+}
+
+.btn-comprar:hover {
+    background: var(--dark-wine);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(114, 47, 55, 0.4);
+}
