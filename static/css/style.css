@@ -115,3 +115,14 @@ nav {
     border-color: var(--wine);
     transform: scale(1.1);
 }
+.hero {
+    height: 70vh;
+    background: url('/static/images/hero/fondo-vintage.jpg') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 2rem;
+}
