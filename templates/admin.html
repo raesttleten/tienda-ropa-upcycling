@@ -22,21 +22,21 @@
     <main class="admin-container">
         <div class="admin-stats">
             <div class="stat-card">
-                <h3><i class="fas fa-box"></i> Total Productos</h3>
+                <h3>Total Productos</h3>
                 <div class="numero">{{ total_productos }}</div>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-warehouse"></i> Stock Total</h3>
+                <h3>Stock Total</h3>
                 <div class="numero">{{ total_stock }}</div>
             </div>
             <div class="stat-card">
-                <h3><i class="fas fa-dollar-sign"></i> Valor Inventario</h3>
+                <h3>Valor Inventario</h3>
                 <div class="numero">${{ "%.2f"|format(valor_inventario) }}</div>
             </div>
         </div>
 
         <section class="agregar-producto">
-            <h2><i class="fas fa-plus-circle"></i> Agregar Nueva Pieza</h2>
+            <h2>Agregar Nueva Pieza</h2>
             <form method="POST" action="/admin/agregar">
                 <input type="text" name="nombre" placeholder="Nombre del producto *" required>
 
@@ -69,15 +69,11 @@
 
                 <textarea name="descripcion" placeholder="Descripción: historia de la pieza, materiales, estado, detalles especiales..." required></textarea>
 
-                <button type="submit">
-                    <i class="fas fa-save"></i> AGREGAR PRODUCTO
-                </button>
+                <button type="submit">AGREGAR PRODUCTO</button>
             </form>
 
             <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(114, 47, 55, 0.1); border-radius: 8px; border: 1px solid var(--wine);">
-                <h4 style="color: var(--light-wine); margin-bottom: 1rem;">
-                    <i class="fas fa-info-circle"></i> Cómo agregar imágenes:
-                </h4>
+                <h4 style="color: var(--light-wine); margin-bottom: 1rem;">Cómo agregar imágenes:</h4>
                 <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
                     <li>Sube tu foto a <a href="https://imgur.com/upload" target="_blank" style="color: var(--wine); font-weight: 600;">Imgur</a> o <a href="https://postimages.org/" target="_blank" style="color: var(--wine); font-weight: 600;">PostImages</a></li>
                     <li>Copia el enlace directo de la imagen</li>
@@ -87,7 +83,7 @@
         </section>
 
         <section class="lista-productos">
-            <h2><i class="fas fa-list"></i> Inventario Actual</h2>
+            <h2>Inventario Actual</h2>
             {% if productos %}
             <table>
                 <thead>
