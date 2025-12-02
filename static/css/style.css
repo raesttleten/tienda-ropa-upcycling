@@ -467,3 +467,15 @@ main {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(114, 47, 55, 0.4);
 }
+.productos-relacionados {
+    margin-top: 5rem;
+}
+
+.productos-relacionados h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
