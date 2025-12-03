@@ -724,3 +724,82 @@ footer p:first-child {
     }
 }
 
+/* CARRUSEL PRODUCTOS DESTACADOS */
+.productos-destacados {
+    margin: 3rem 0 5rem;
+}
+
+.carrusel-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.carrusel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* SECCIÓN INFORMATIVA */
+.info-upcycling {
+    background: var(--dark-gray);
+    padding: 5rem 2rem;
+    margin: 5rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--wine);
+}
+
+.info-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.info-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--cream);
+    margin-bottom: 2rem;
+}
+
+.info-content p {
+    font-size: 1.2rem;
+    color: var(--light-gray);
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-top: 4rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    color: var(--wine);
+    margin-bottom: 1rem;
+}
+
+.stat-item p {
+    font-size: 1.1rem;
+    color: var(--light-gray);
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .carrusel {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
