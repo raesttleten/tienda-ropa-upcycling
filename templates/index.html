@@ -88,16 +88,12 @@
             {% endif %}
         </section>
 
-<!-- ✅ NUEVO: SECCIONES INFORMATIVAS INTERCALADAS -->
+<!-- ✅ SECCIONES INFORMATIVAS INTERCALADAS CON IMÁGENES -->
 <section class="info-productos-section">
-    <!-- Fila 1: Producto izquierda + Info derecha -->
+    <!-- Fila 1: Imagen izquierda + Info derecha -->
     <div class="info-fila">
-        <div class="info-producto-img">
-            {% if productos_destacados and productos_destacados|length > 0 %}
-            <img src="{{ productos_destacados[0].imagen_url }}" alt="Producto Upcycling" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
-            {% else %}
-            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop" alt="Producto Upcycling">
-            {% endif %}
+        <div class="info-imagen">
+            <img src="/static/images/info-upcycling.jpg" alt="¿Qué es el Upcycling?" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=600&fit=crop'">
         </div>
         <div class="info-box">
             <h3>¿Qué es el Upcycling?</h3>
@@ -106,115 +102,78 @@
         </div>
     </div>
 
-    <!-- Fila 2: Info izquierda + Producto derecha -->
+    <!-- Fila 2: Info izquierda + Imagen derecha -->
     <div class="info-fila reverse">
         <div class="info-box">
             <h3>Origen de la Moda Upcycling</h3>
             <p>La moda upcycling nació como respuesta al impacto ambiental de la industria textil. Diseñadores visionarios comenzaron a reimaginar prendas vintage, dándoles nueva vida y propósito.</p>
             <p>Hoy, el upcycling representa un movimiento global que combina conciencia ambiental, creatividad artística y expresión individual. Cada pieza es una declaración contra el fast fashion.</p>
         </div>
-        <div class="info-producto-img">
-            {% if productos_destacados and productos_destacados|length > 1 %}
-            <img src="{{ productos_destacados[1].imagen_url }}" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop'">
-            {% else %}
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop" alt="Moda Sostenible">
-            {% endif %}
+        <div class="info-imagen">
+            <img src="/static/images/info-origen.jpg" alt="Origen de la Moda Upcycling" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
         </div>
     </div>
 </section>
 
-        <!-- Dashboard de Sostenibilidad -->
-        <section class="dashboard-section">
-            <h2>Impacto de la Moda Sostenible</h2>
+<!-- Dashboard de Sostenibilidad -->
+<section class="dashboard-section">
+    <h2>Impacto de la Moda Sostenible</h2>
 
-            <div class="metricas-cards">
-                <div class="metrica-card">
-                    <div class="metrica-numero" id="total-prendas">0</div>
-                    <p>Prendas Upcycling</p>
-                </div>
-                <div class="metrica-card">
-                    <div class="metrica-numero" id="piezas-unicas">0</div>
-                    <p>Piezas Únicas</p>
-                </div>
-                <div class="metrica-card">
-                    <div class="metrica-numero" id="co2-ahorrado">0</div>
-                    <p>Kg CO2 Ahorrados</p>
-                </div>
-                <div class="metrica-card">
-                    <div class="metrica-numero" id="agua-ahorrada">0</div>
-                    <p>Litros de Agua Ahorrados</p>
-                </div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="chart-container">
-                    <h4>Impacto Ambiental</h4>
-                    <div id="chart-impacto"></div>
-                </div>
-
-                <div class="chart-container">
-                    <h4>Distribución por Categoría</h4>
-                    <div id="chart-categorias"></div>
-                </div>
-
-                <div class="chart-container">
-                    <h4>Consumo Sostenible Mensual</h4>
-                    <div id="chart-consumo"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <section class="galeria-horizontal">
-        <div class="galeria-grid">
-            <div class="galeria-item">
-                <img src="/static/images/galeria-1.jpg" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop'">
-            </div>
-            <div class="galeria-item">
-                <img src="/static/images/galeria-2.jpg" alt="Upcycling Fashion" onerror="this.src='https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=600&fit=crop'">
-            </div>
-            <div class="galeria-item">
-                <img src="/static/images/galeria-3.jpg" alt="Vintage Style" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
-            </div>
+    <div class="metricas-cards">
+        <div class="metrica-card">
+            <div class="metrica-numero" id="total-prendas">0</div>
+            <p>Prendas Upcycling</p>
         </div>
-
-        <div class="drops-text">
-            <h2>DROP CADA SEMANA</h2>
-            <p>Nuevas piezas únicas todos los viernes</p>
+        <div class="metrica-card">
+            <div class="metrica-numero" id="piezas-unicas">0</div>
+            <p>Piezas Únicas</p>
         </div>
-    </section>
-
-       <section class="info-productos-section">
-    <!-- Fila 1: Producto izquierda + Info derecha -->
-    <div class="info-fila">
-        <div class="info-producto-img">
-            {% if productos_destacados and productos_destacados|length > 0 %}
-            <img src="{{ productos_destacados[0].imagen_url }}" alt="Producto Upcycling" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
-            {% else %}
-            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop" alt="Producto Upcycling">
-            {% endif %}
+        <div class="metrica-card">
+            <div class="metrica-numero" id="co2-ahorrado">0</div>
+            <p>Kg CO2 Ahorrados</p>
         </div>
-        <div class="info-box">
-            <h3>¿Qué es el Upcycling?</h3>
-            <p>El upcycling es el arte de transformar prendas y materiales descartados en piezas únicas de mayor valor. A diferencia del reciclaje tradicional, el upcycling mantiene la calidad original mientras crea algo completamente nuevo y exclusivo.</p>
-            <p>Cada prenda upcycling cuenta una historia de creatividad, sostenibilidad y moda consciente. Es dar una segunda vida con estilo.</p>
+        <div class="metrica-card">
+            <div class="metrica-numero" id="agua-ahorrada">0</div>
+            <p>Litros de Agua Ahorrados</p>
         </div>
     </div>
 
-    <!-- Fila 2: Info izquierda + Producto derecha -->
-    <div class="info-fila reverse">
-        <div class="info-box">
-            <h3>Origen de la Moda Upcycling</h3>
-            <p>La moda upcycling nació como respuesta al impacto ambiental de la industria textil. Diseñadores visionarios comenzaron a reimaginar prendas vintage, dándoles nueva vida y propósito.</p>
-            <p>Hoy, el upcycling representa un movimiento global que combina conciencia ambiental, creatividad artística y expresión individual. Cada pieza es una declaración contra el fast fashion.</p>
+    <div class="dashboard-grid">
+        <div class="chart-container">
+            <h4>Impacto Ambiental</h4>
+            <div id="chart-impacto"></div>
         </div>
-        <div class="info-producto-img">
-            {% if productos_destacados and productos_destacados|length > 1 %}
-            <img src="{{ productos_destacados[1].imagen_url }}" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop'">
-            {% else %}
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop" alt="Moda Sostenible">
-            {% endif %}
+
+        <div class="chart-container">
+            <h4>Distribución por Categoría</h4>
+            <div id="chart-categorias"></div>
         </div>
+
+        <div class="chart-container">
+            <h4>Consumo Sostenible Mensual</h4>
+            <div id="chart-consumo"></div>
+        </div>
+    </div>
+</section>
+</main>
+
+<!-- ✅ GALERÍA HORIZONTAL (3 IMÁGENES) -->
+<section class="galeria-horizontal">
+    <div class="galeria-grid">
+        <div class="galeria-item">
+            <img src="/static/images/galeria-1.jpg" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop'">
+        </div>
+        <div class="galeria-item">
+            <img src="/static/images/galeria-2.jpg" alt="Upcycling Fashion" onerror="this.src='https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=600&fit=crop'">
+        </div>
+        <div class="galeria-item">
+            <img src="/static/images/galeria-3.jpg" alt="Vintage Style" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
+        </div>
+    </div>
+
+    <div class="drops-text">
+        <h2>DROP CADA SEMANA</h2>
+        <p>Nuevas piezas únicas todos los viernes</p>
     </div>
 </section>
 

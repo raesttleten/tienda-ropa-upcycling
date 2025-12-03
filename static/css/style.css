@@ -863,7 +863,7 @@ footer p:first-child {
     align-items: center;
 }
 
-/* Fila invertida (info izquierda, producto derecha) */
+/* Fila invertida (info izquierda, imagen derecha) */
 .info-fila.reverse {
     direction: rtl;
 }
@@ -872,7 +872,8 @@ footer p:first-child {
     direction: ltr;
 }
 
-.info-producto-img {
+/* Contenedor de imagen personalizada */
+.info-imagen {
     width: 100%;
     height: 500px;
     border-radius: 8px;
@@ -880,14 +881,14 @@ footer p:first-child {
     border: 1px solid var(--wine);
 }
 
-.info-producto-img img {
+.info-imagen img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
 
-.info-producto-img:hover img {
+.info-imagen:hover img {
     transform: scale(1.05);
 }
 
@@ -993,7 +994,7 @@ footer p:first-child {
         direction: ltr;
     }
 
-    .info-producto-img {
+    .info-imagen {
         height: 400px;
     }
 
@@ -1020,7 +1021,7 @@ footer p:first-child {
         font-size: 1rem;
     }
 
-    .info-producto-img {
+    .info-imagen {
         height: 350px;
     }
 
