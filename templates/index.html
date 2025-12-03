@@ -88,6 +88,41 @@
             {% endif %}
         </section>
 
+<!-- ✅ NUEVO: SECCIONES INFORMATIVAS INTERCALADAS -->
+<section class="info-productos-section">
+    <!-- Fila 1: Producto izquierda + Info derecha -->
+    <div class="info-fila">
+        <div class="info-producto-img">
+            {% if productos_destacados and productos_destacados|length > 0 %}
+            <img src="{{ productos_destacados[0].imagen_url }}" alt="Producto Upcycling" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop" alt="Producto Upcycling">
+            {% endif %}
+        </div>
+        <div class="info-box">
+            <h3>¿Qué es el Upcycling?</h3>
+            <p>El upcycling es el arte de transformar prendas y materiales descartados en piezas únicas de mayor valor. A diferencia del reciclaje tradicional, el upcycling mantiene la calidad original mientras crea algo completamente nuevo y exclusivo.</p>
+            <p>Cada prenda upcycling cuenta una historia de creatividad, sostenibilidad y moda consciente. Es dar una segunda vida con estilo.</p>
+        </div>
+    </div>
+
+    <!-- Fila 2: Info izquierda + Producto derecha -->
+    <div class="info-fila reverse">
+        <div class="info-box">
+            <h3>Origen de la Moda Upcycling</h3>
+            <p>La moda upcycling nació como respuesta al impacto ambiental de la industria textil. Diseñadores visionarios comenzaron a reimaginar prendas vintage, dándoles nueva vida y propósito.</p>
+            <p>Hoy, el upcycling representa un movimiento global que combina conciencia ambiental, creatividad artística y expresión individual. Cada pieza es una declaración contra el fast fashion.</p>
+        </div>
+        <div class="info-producto-img">
+            {% if productos_destacados and productos_destacados|length > 1 %}
+            <img src="{{ productos_destacados[1].imagen_url }}" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop'">
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=600&fit=crop" alt="Moda Sostenible">
+            {% endif %}
+        </div>
+    </div>
+</section>
+
         <!-- Dashboard de Sostenibilidad -->
         <section class="dashboard-section">
             <h2>Impacto de la Moda Sostenible</h2>
@@ -129,6 +164,20 @@
             </div>
         </section>
     </main>
+
+       <section class="video-section">
+        <div class="video-container">
+            <video controls>
+                <source src="/static/videos/fast-fashion-video.mp4" type="video/mp4">
+                Tu navegador no soporta la reproducción de videos.
+            </video>
+        </div>
+
+        <div class="drops-text">
+            <h2>DROP CADA SEMANA</h2>
+            <p>Nuevas piezas únicas todos los viernes</p>
+        </div>
+    </section>
 
     <footer>
         <p>thriftstorecol</p>
