@@ -81,17 +81,6 @@
                 <button type="submit">AGREGAR PRODUCTO</button>
                 {% endif %}
             </form>
-
-            {% if not producto_editar %}
-            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(114, 47, 55, 0.1); border-radius: 8px; border: 1px solid var(--wine);">
-                <h4 style="color: var(--light-wine); margin-bottom: 1rem;">Cómo agregar imágenes:</h4>
-                <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
-                    <li>Sube tu foto a <a href="https://imgur.com/upload" target="_blank" style="color: var(--wine); font-weight: 600;">Imgur</a> o <a href="https://postimages.org/" target="_blank" style="color: var(--wine); font-weight: 600;">PostImages</a></li>
-                    <li>Copia el enlace directo de la imagen</li>
-                    <li>Pégalo en el campo "URL de la imagen"</li>
-                </ol>
-            </div>
-            {% endif %}
         </section>
 
         <section class="lista-productos">
