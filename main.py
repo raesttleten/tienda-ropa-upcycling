@@ -95,6 +95,50 @@ async def agregar_producto(
     return RedirectResponse(url="/admin", status_code=303)
 
 
+# Obtener datos de un producto para editar
+@app.get("/admin/editar/{producto_id}", response_class=HTMLResponse)
+async def obtener_producto_editar(request: Request, producto_id: int, db: Session = Depends(get_db)):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    productos = db.query(models.Producto).all()
+    total_productos = len(productos)
+    total_stock = sum([p.stock for p in productos])
+    valor_inventario = sum([p.precio * p.stock for p in productos])
+
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "productos": productos,
+        "producto_editar": producto,
+        "total_productos": total_productos,
+        "total_stock": total_stock,
+        "valor_inventario": valor_inventario
+    })
+
+
+# Actualizar producto editado
+@app.post("/admin/actualizar/{producto_id}")
+async def actualizar_producto(
+        producto_id: int,
+        nombre: str = Form(...),
+        descripcion: str = Form(...),
+        precio: float = Form(...),
+        talla: str = Form(...),
+        categoria: str = Form(...),
+        imagen_url: str = Form(...),
+        stock: int = Form(...),
+        db: Session = Depends(get_db)
+):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if producto:
+        producto.nombre = nombre
+        producto.descripcion = descripcion
+        producto.precio = precio
+        producto.talla = talla
+        producto.categoria = categoria
+        producto.imagen_url = imagen_url
+        producto.stock = stock
+        db.commit()
+    return RedirectResponse(url="/admin", status_code=303)
+
 # Editar producto
 @app.post("/admin/editar/{producto_id}")
 async def editar_producto(
