@@ -37,12 +37,12 @@
 
         <section class="agregar-producto">
             {% if producto_editar %}
-                <h2>Editar Producto</h2>
-                <form method="POST" action="/admin/actualizar/{{ producto_editar.id }}">
+            <h2>Editar Producto</h2>
             {% else %}
-                <h2>Agregar Nueva Pieza</h2>
-                <form method="POST" action="/admin/agregar">
+            <h2>Agregar Nueva Pieza</h2>
             {% endif %}
+
+            <form method="POST" action="{% if producto_editar %}/admin/actualizar/{{ producto_editar.id }}{% else %}/admin/agregar{% endif %}">
                 <input type="text" name="nombre" placeholder="Nombre del producto *" value="{{ producto_editar.nombre if producto_editar else '' }}" required>
 
                 <select name="categoria" required>
@@ -75,12 +75,23 @@
                 <textarea name="descripcion" placeholder="Descripción: historia de la pieza, materiales, estado, detalles especiales..." required>{{ producto_editar.descripcion if producto_editar else '' }}</textarea>
 
                 {% if producto_editar %}
-                    <button type="submit" style="background: var(--light-wine);">ACTUALIZAR PRODUCTO</button>
-                    <a href="/admin" style="grid-column: 1 / -1; text-align: center; padding: 1rem; background: var(--medium-gray); color: var(--white); text-decoration: none; border-radius: 4px; font-weight: 600;">CANCELAR</a>
+                <button type="submit" style="background: var(--light-wine);">ACTUALIZAR PRODUCTO</button>
+                <a href="/admin" style="grid-column: 1 / -1; text-align: center; padding: 1rem; background: var(--medium-gray); color: var(--white); text-decoration: none; border-radius: 4px; font-weight: 600;">CANCELAR</a>
                 {% else %}
-                    <button type="submit">AGREGAR PRODUCTO</button>
+                <button type="submit">AGREGAR PRODUCTO</button>
                 {% endif %}
             </form>
+
+            {% if not producto_editar %}
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(114, 47, 55, 0.1); border-radius: 8px; border: 1px solid var(--wine);">
+                <h4 style="color: var(--light-wine); margin-bottom: 1rem;">Cómo agregar imágenes:</h4>
+                <ol style="color: var(--light-gray); line-height: 1.8; padding-left: 1.5rem;">
+                    <li>Sube tu foto a <a href="https://imgur.com/upload" target="_blank" style="color: var(--wine); font-weight: 600;">Imgur</a> o <a href="https://postimages.org/" target="_blank" style="color: var(--wine); font-weight: 600;">PostImages</a></li>
+                    <li>Copia el enlace directo de la imagen</li>
+                    <li>Pégalo en el campo "URL de la imagen"</li>
+                </ol>
+            </div>
+            {% endif %}
         </section>
 
         <section class="lista-productos">
@@ -114,22 +125,23 @@
                         <td>{{ producto.talla }}</td>
                         <td>
                             {% if producto.stock == 0 %}
-                                <span style="color: #8B0000;">Agotado</span>
+                            <span style="color: #8B0000;">Agotado</span>
                             {% elif producto.stock == 1 %}
-                                <span style="color: var(--light-wine);">1 (única)</span>
+                            <span style="color: var(--light-wine);">1 (única)</span>
                             {% elif producto.stock < 3 %}
-                                <span style="color: var(--light-wine);">{{ producto.stock }}</span>
+                            <span style="color: var(--light-wine);">{{ producto.stock }}</span>
                             {% else %}
-                                <span style="color: var(--light-gray);">{{ producto.stock }}</span>
+                            <span style="color: var(--light-gray);">{{ producto.stock }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td style="white-space: nowrap;">
                             <a href="/admin/editar/{{ producto.id }}"
-                               style="background: var(--wine); color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; display: inline-block; margin-right: 0.5rem; font-size: 0.85rem;">
+                               style="background: var(--wine); color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; display: inline-block; margin-right: 0.5rem; font-size: 0.85rem; font-weight: 600;">
                                 Editar
                             </a>
                             <a href="/admin/eliminar/{{ producto.id }}"
                                class="btn-delete"
+                               style="padding: 0.5rem 1rem; font-size: 0.85rem; display: inline-block;"
                                onclick='return confirm("¿Seguro que quieres eliminar este producto?")'>
                                 <i class="fas fa-trash"></i>
                             </a>
