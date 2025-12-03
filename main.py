@@ -24,6 +24,7 @@ templates = Jinja2Templates(directory="templates")
 # ==================== RUTAS ====================
 
 # Página principal - Catálogo de productos
+# Página principal - Catálogo de productos
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: Session = Depends(get_db), busqueda: str = None):
     if busqueda:
@@ -31,12 +32,16 @@ async def home(request: Request, db: Session = Depends(get_db), busqueda: str = 
             models.Producto.nombre.contains(busqueda) |
             models.Producto.categoria.contains(busqueda)
         ).all()
+        productos_destacados = []
     else:
-        productos = db.query(models.Producto).all()
+        productos = []
+        # Mostrar solo 6 productos destacados (los más recientes)
+        productos_destacados = db.query(models.Producto).order_by(models.Producto.id.desc()).limit(6).all()
 
     return templates.TemplateResponse("index.html", {
         "request": request,
         "productos": productos,
+        "productos_destacados": productos_destacados,
         "busqueda": busqueda
     })
 

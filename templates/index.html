@@ -46,8 +46,13 @@
         <h2>Moda. Sostenible. Único.</h2>
     </section>
 
-    <main>
+<main>
+    {% if busqueda %}
+        <!-- Resultados de búsqueda -->
         <section class="productos">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--cream); margin-bottom: 2rem; text-align: center;">
+                Resultados para "{{ busqueda }}"
+            </h3>
             <div class="productos-grid">
                 {% if productos %}
                     {% for producto in productos %}
@@ -69,7 +74,7 @@
                             <span class="categoria">{{ producto.categoria }}</span>
                             <h4>{{ producto.nombre }}</h4>
                             <span class="talla">Talla: {{ producto.talla }}</span>
-                            <p class="precio">${{ "{:,.0f}".format(producto.precio) }} COP</p>
+                            <p class="precio">${{ producto.precio|format_cop }} COP</p>
 
                             <div class="producto-actions">
                                 <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
@@ -80,13 +85,83 @@
                 {% else %}
                     <div class="no-productos">
                         <h3>No se encontraron productos</h3>
-                        <p>{% if busqueda %}No hay resultados para "{{ busqueda }}"{% else %}Aún no hay productos disponibles{% endif %}</p>
-                        <a href="/admin" class="btn-primary" style="display: inline-block; margin-top: 2rem;">Agregar Productos</a>
+                        <p>No hay resultados para "{{ busqueda }}"</p>
                     </div>
                 {% endif %}
             </div>
         </section>
-    </main>
+    {% else %}
+        <!-- Productos destacados -->
+        <section class="productos-destacados">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--cream); margin-bottom: 3rem; text-align: center;">
+                Productos Destacados
+            </h3>
+
+            {% if productos_destacados %}
+            <div class="carrusel-container">
+                <div class="carrusel">
+                    {% for producto in productos_destacados %}
+                    <div class="producto-card">
+                        <div class="producto-img-container">
+                            <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
+
+                            <div class="producto-badges">
+                                {% if loop.index <= 3 %}
+                                <span class="badge nuevo">NUEVO</span>
+                                {% endif %}
+                                {% if producto.stock == 1 %}
+                                <span class="badge oferta">ÚNICA PIEZA</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="producto-info">
+                            <span class="categoria">{{ producto.categoria }}</span>
+                            <h4>{{ producto.nombre }}</h4>
+                            <span class="talla">Talla: {{ producto.talla }}</span>
+                            <p class="precio">${{ producto.precio|format_cop }} COP</p>
+
+                            <div class="producto-actions">
+                                <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <div class="no-productos">
+                    <h3>No hay productos disponibles</h3>
+                    <p>Aún no hay productos disponibles</p>
+                    <a href="/admin" class="btn-primary" style="display: inline-block; margin-top: 2rem;">Agregar Productos</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Sección informativa -->
+        <section class="info-upcycling">
+            <div class="info-content">
+                <h2>Por qué Upcycling</h2>
+                <p>El upcycling es una práctica de moda sostenible que transforma prendas pre-amadas en piezas únicas. En thriftstorecol, cada producto tiene una segunda oportunidad de brillar.</p>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">85%</div>
+                        <p>Reducción en consumo de agua</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">70%</div>
+                        <p>Menos emisiones de CO2</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <p>Piezas únicas y originales</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+</main>
 
     <footer>
         <p>thriftstorecol</p>

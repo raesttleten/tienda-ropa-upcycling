@@ -31,47 +31,56 @@
             </div>
             <div class="stat-card">
                 <h3>Valor Inventario</h3>
-                <div class="numero">${{ "{:,.0f}".format(valor_inventario) }} COP</div>
+                <div class="numero">${{ valor_inventario|format_cop }} COP</div>
             </div>
         </div>
 
         <section class="agregar-producto">
-            <h2>Agregar Nueva Pieza</h2>
-            <form method="POST" action="/admin/agregar">
-                <input type="text" step="0.01" name="nombre" placeholder="Nombre del producto *" required>
+            {% if producto_editar %}
+                <h2>Editar Producto</h2>
+                <form method="POST" action="/admin/actualizar/{{ producto_editar.id }}">
+            {% else %}
+                <h2>Agregar Nueva Pieza</h2>
+                <form method="POST" action="/admin/agregar">
+            {% endif %}
+                <input type="text" name="nombre" placeholder="Nombre del producto *" value="{{ producto_editar.nombre if producto_editar else '' }}" required>
 
                 <select name="categoria" required>
                     <option value="">Seleccionar categoría *</option>
-                    <option value="Camisas">Camisas</option>
-                    <option value="Pantalones">Pantalones</option>
-                    <option value="Faldas">Faldas</option>
-                    <option value="Bolsos">Bolsos</option>
-                    <option value="Accesorios">Accesorios</option>
-                    <option value="Otro">Otro</option>
+                    <option value="Camisas" {% if producto_editar and producto_editar.categoria =='Camisas' %}selected{% endif %}>Camisas</option>
+                    <option value="Pantalones" {% if producto_editar and producto_editar.categoria =='Pantalones' %}selected{% endif %}>Pantalones</option>
+                    <option value="Faldas" {% if producto_editar and producto_editar.categoria =='Faldas' %}selected{% endif %}>Faldas</option>
+                    <option value="Bolsos" {% if producto_editar and producto_editar.categoria =='Bolsos' %}selected{% endif %}>Bolsos</option>
+                    <option value="Accesorios" {% if producto_editar and producto_editar.categoria =='Accesorios' %}selected{% endif %}>Accesorios</option>
+                    <option value="Otro" {% if producto_editar and producto_editar.categoria =='Otro' %}selected{% endif %}>Otro</option>
                 </select>
 
-                <input type="number" name="precio" placeholder="Precio (COP) *" required>
+                <input type="number" step="0.01" name="precio" placeholder="Precio (COP) *" value="{{ producto_editar.precio if producto_editar else '' }}" required>
 
                 <select name="talla" required>
                     <option value="">Seleccionar talla *</option>
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                    <option value="XXL">XXL</option>
-                    <option value="Única">Única</option>
+                    <option value="XS" {% if producto_editar and producto_editar.talla =='XS' %}selected{% endif %}>XS</option>
+                    <option value="S" {% if producto_editar and producto_editar.talla =='S' %}selected{% endif %}>S</option>
+                    <option value="M" {% if producto_editar and producto_editar.talla =='M' %}selected{% endif %}>M</option>
+                    <option value="L" {% if producto_editar and producto_editar.talla =='L' %}selected{% endif %}>L</option>
+                    <option value="XL" {% if producto_editar and producto_editar.talla =='XL' %}selected{% endif %}>XL</option>
+                    <option value="XXL" {% if producto_editar and producto_editar.talla =='XXL' %}selected{% endif %}>XXL</option>
+                    <option value="Única" {% if producto_editar and producto_editar.talla =='Única' %}selected{% endif %}>Única</option>
                 </select>
 
-                <input type="number" name="stock" placeholder="Stock disponible *" required min="0">
+                <input type="number" name="stock" placeholder="Stock disponible *" value="{{ producto_editar.stock if producto_editar else '' }}" required min="0">
 
-                <input type="url" name="imagen_url" placeholder="URL de la imagen *" required>
+                <input type="url" name="imagen_url" placeholder="URL de la imagen *" value="{{ producto_editar.imagen_url if producto_editar else '' }}" required>
 
-                <textarea name="descripcion" placeholder="Descripción: historia de la pieza, materiales, estado, detalles especiales..." required></textarea>
+                <textarea name="descripcion" placeholder="Descripción: historia de la pieza, materiales, estado, detalles especiales..." required>{{ producto_editar.descripcion if producto_editar else '' }}</textarea>
 
-                <button type="submit">AGREGAR PRODUCTO</button>
+                {% if producto_editar %}
+                    <button type="submit" style="background: var(--light-wine);">ACTUALIZAR PRODUCTO</button>
+                    <a href="/admin" style="grid-column: 1 / -1; text-align: center; padding: 1rem; background: var(--medium-gray); color: var(--white); text-decoration: none; border-radius: 4px; font-weight: 600;">CANCELAR</a>
+                {% else %}
+                    <button type="submit">AGREGAR PRODUCTO</button>
+                {% endif %}
             </form>
-
         </section>
 
         <section class="lista-productos">
@@ -101,7 +110,7 @@
                         </td>
                         <td><strong>{{ producto.nombre }}</strong></td>
                         <td><span style="color: var(--light-wine);">{{ producto.categoria }}</span></td>
-                        <td style="color: var(--wine); font-weight: 700; font-size: 1.1rem;">${{ "{:,.0f}".format(producto.precio) }} COP</td>
+                        <td style="color: var(--wine); font-weight: 700; font-size: 1.1rem;">${{ producto.precio|format_cop }} COP</td>
                         <td>{{ producto.talla }}</td>
                         <td>
                             {% if producto.stock == 0 %}
@@ -115,10 +124,14 @@
                             {% endif %}
                         </td>
                         <td>
+                            <a href="/admin/editar/{{ producto.id }}"
+                               style="background: var(--wine); color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; display: inline-block; margin-right: 0.5rem; font-size: 0.85rem;">
+                                Editar
+                            </a>
                             <a href="/admin/eliminar/{{ producto.id }}"
                                class="btn-delete"
                                onclick='return confirm("¿Seguro que quieres eliminar este producto?")'>
-                                <i class="fas fa-trash"></i> Eliminar
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
                     </tr>
@@ -127,7 +140,7 @@
             </table>
             {% else %}
             <p style="text-align: center; color: var(--light-gray); padding: 3rem;">
-                No hay productos. Agrega tu primera prenda.
+                No hay productos. Agrega tu primera pieza vintage arriba.
             </p>
             {% endif %}
         </section>
