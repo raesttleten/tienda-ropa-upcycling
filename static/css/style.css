@@ -849,3 +849,202 @@ footer p:first-child {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==================== SECCIONES INFORMATIVAS INTERCALADAS ==================== */
+.info-productos-section {
+    margin: 5rem 0;
+}
+
+.info-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 4rem;
+    align-items: center;
+}
+
+/* Fila invertida (info izquierda, producto derecha) */
+.info-fila.reverse {
+    direction: rtl;
+}
+
+.info-fila.reverse > * {
+    direction: ltr;
+}
+
+.info-producto-img {
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--wine);
+}
+
+.info-producto-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.info-producto-img:hover img {
+    transform: scale(1.05);
+}
+
+.info-box {
+    background: var(--dark-gray);
+    padding: 3rem;
+    border-radius: 8px;
+    border: 1px solid var(--wine);
+}
+
+.info-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.info-box p {
+    color: var(--light-gray);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.info-box p:last-child {
+    margin-bottom: 0;
+}
+
+/* ==================== GALERÍA HORIZONTAL (3 IMÁGENES) ==================== */
+.galeria-horizontal {
+    margin: 5rem 0 0 0;
+    width: 100%;
+}
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    width: 100%;
+    border-top: 2px solid var(--wine);
+    border-bottom: 2px solid var(--wine);
+}
+
+.galeria-item {
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+.galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.3s ease;
+    filter: grayscale(20%);
+}
+
+.galeria-item:hover img {
+    transform: scale(1.1);
+    filter: grayscale(0%);
+}
+
+/* Línea divisoria entre imágenes */
+.galeria-item:not(:last-child) {
+    border-right: 1px solid var(--wine);
+}
+
+/* ==================== TEXTO DE DROPS ==================== */
+.drops-text {
+    background: var(--dark-gray);
+    padding: 4rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--wine);
+}
+
+.drops-text h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 5rem;
+    color: var(--wine);
+    letter-spacing: 8px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.drops-text p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    font-style: italic;
+    letter-spacing: 2px;
+}
+
+/* ==================== RESPONSIVE PARA NUEVAS SECCIONES ==================== */
+@media (max-width: 1024px) {
+    .info-fila {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .info-fila.reverse {
+        direction: ltr;
+    }
+
+    .info-producto-img {
+        height: 400px;
+    }
+
+    .galeria-item {
+        height: 400px;
+    }
+
+    .drops-text h2 {
+        font-size: 3.5rem;
+        letter-spacing: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .info-box {
+        padding: 2rem;
+    }
+
+    .info-box h3 {
+        font-size: 2rem;
+    }
+
+    .info-box p {
+        font-size: 1rem;
+    }
+
+    .info-producto-img {
+        height: 350px;
+    }
+
+    /* Galería en móvil: 1 columna vertical */
+    .galeria-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .galeria-item {
+        height: 300px;
+        border-right: none !important;
+        border-bottom: 1px solid var(--wine);
+    }
+
+    .galeria-item:last-child {
+        border-bottom: none;
+    }
+
+    .drops-text h2 {
+        font-size: 2.5rem;
+        letter-spacing: 3px;
+    }
+
+    .drops-text p {
+        font-size: 1rem;
+    }
+}
