@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ categoria }} - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+
+            <div class="nav-icons">
+                <form action="/buscar" method="get" class="search-bar">
+                    <input type="text" name="q" placeholder="Buscar...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
+                <a href="/favoritos" title="Favoritos">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="/carrito" title="Carrito">
+                    <i class="fas fa-shopping-bag"></i>
+                </a>
+                <a href="/admin" title="Admin">
+                    <i class="fas fa-user-shield"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="categorias">
+        <div class="categorias-inner">
+            <a href="/categoria/Camisas" class="categoria-btn {% if categoria == 'Camisas' %}active{% endif %}">Camisas</a>
+            <a href="/categoria/Pantalones" class="categoria-btn {% if categoria == 'Pantalones' %}active{% endif %}">Pantalones</a>
+            <a href="/categoria/Faldas" class="categoria-btn {% if categoria == 'Faldas' %}active{% endif %}">Faldas</a>
+            <a href="/categoria/Bolsos" class="categoria-btn {% if categoria == 'Bolsos' %}active{% endif %}">Bolsos</a>
+            <a href="/categoria/Accesorios" class="categoria-btn {% if categoria == 'Accesorios' %}active{% endif %}">Accesorios</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="categoria-section">
+            <h2 class="categoria-title">{{ categoria }}</h2>
+
+            {% if productos %}
+            <div class="productos-grid">
+                {% for producto in productos %}
+                <div class="producto-card">
+                    <div class="producto-img-container">
+                        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
+
+                        <div class="producto-badges">
+                            {% if producto.stock == 1 %}
+                            <span class="badge nuevo">ÚNICA PIEZA</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="producto-info">
+                        <span class="categoria">{{ producto.categoria }}</span>
+                        <h4>{{ producto.nombre }}</h4>
+                        <span class="talla">Talla: {{ producto.talla }}</span>
+                        <p class="precio">${{ producto.precio|format_cop }} COP</p>
+
+                        <div class="producto-actions">
+                            <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-productos">
+                <h3>No hay productos en esta categoría</h3>
+                <p>Pronto agregaremos nuevas piezas</p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
+    </footer>
+</body>
+</html>

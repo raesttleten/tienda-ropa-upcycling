@@ -6,6 +6,7 @@
     <title>thriftstorecol - Moda Vintage Sostenible</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
     <header>
@@ -13,11 +14,14 @@
             <a href="/" class="logo">thriftstorecol</a>
 
             <div class="nav-icons">
-                <form action="/" method="get" class="search-bar">
-                    <input type="text" name="busqueda" placeholder="Buscar..." value="{{ busqueda or '' }}">
+                <form action="/buscar" method="get" class="search-bar">
+                    <input type="text" name="q" placeholder="Buscar...">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
 
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
                 <a href="/favoritos" title="Favoritos">
                     <i class="fas fa-heart"></i>
                 </a>
@@ -33,12 +37,11 @@
 
     <div class="categorias">
         <div class="categorias-inner">
-            <a href="/" class="categoria-btn {% if not categoria_actual %}active{% endif %}">Todo</a>
-            <a href="/categoria/Camisas" class="categoria-btn {% if categoria_actual == 'Camisas' %}active{% endif %}">Camisas</a>
-            <a href="/categoria/Pantalones" class="categoria-btn {% if categoria_actual == 'Pantalones' %}active{% endif %}">Pantalones</a>
-            <a href="/categoria/Faldas" class="categoria-btn {% if categoria_actual == 'Faldas' %}active{% endif %}">Faldas</a>
-            <a href="/categoria/Bolsos" class="categoria-btn {% if categoria_actual == 'Bolsos' %}active{% endif %}">Bolsos</a>
-            <a href="/categoria/Accesorios" class="categoria-btn {% if categoria_actual == 'Accesorios' %}active{% endif %}">Accesorios</a>
+            <a href="/categoria/Camisas" class="categoria-btn">Camisas</a>
+            <a href="/categoria/Pantalones" class="categoria-btn">Pantalones</a>
+            <a href="/categoria/Faldas" class="categoria-btn">Faldas</a>
+            <a href="/categoria/Bolsos" class="categoria-btn">Bolsos</a>
+            <a href="/categoria/Accesorios" class="categoria-btn">Accesorios</a>
         </div>
     </div>
 
@@ -46,126 +49,199 @@
         <h2>Moda. Sostenible. Único.</h2>
     </section>
 
-<main>
-    {% if busqueda %}
-        <!-- Resultados de búsqueda -->
-        <section class="productos">
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--cream); margin-bottom: 2rem; text-align: center;">
-                Resultados para "{{ busqueda }}"
-            </h3>
-            <div class="productos-grid">
-                {% if productos %}
-                    {% for producto in productos %}
-                    <div class="producto-card">
-                        <div class="producto-img-container">
-                            <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
-
-                            <div class="producto-badges">
-                                {% if loop.index <= 3 %}
-                                <span class="badge nuevo">NUEVO</span>
-                                {% endif %}
-                                {% if producto.stock == 1 %}
-                                <span class="badge oferta">ÚNICA PIEZA</span>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="producto-info">
-                            <span class="categoria">{{ producto.categoria }}</span>
-                            <h4>{{ producto.nombre }}</h4>
-                            <span class="talla">Talla: {{ producto.talla }}</span>
-                            <p class="precio">${{ producto.precio|format_cop }} COP</p>
-
-                            <div class="producto-actions">
-                                <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="no-productos">
-                        <h3>No se encontraron productos</h3>
-                        <p>No hay resultados para "{{ busqueda }}"</p>
-                    </div>
-                {% endif %}
-            </div>
-        </section>
-    {% else %}
-        <!-- Productos destacados -->
+    <main>
+        <!-- Productos Destacados -->
         <section class="productos-destacados">
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--cream); margin-bottom: 3rem; text-align: center;">
-                Productos Destacados
-            </h3>
+            <h3>Piezas Destacadas</h3>
 
             {% if productos_destacados %}
-            <div class="carrusel-container">
-                <div class="carrusel">
-                    {% for producto in productos_destacados %}
-                    <div class="producto-card">
-                        <div class="producto-img-container">
-                            <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
+            <div class="productos-grid-destacados">
+                {% for producto in productos_destacados %}
+                <div class="producto-card">
+                    <div class="producto-img-container">
+                        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop'">
 
-                            <div class="producto-badges">
-                                {% if loop.index <= 3 %}
-                                <span class="badge nuevo">NUEVO</span>
-                                {% endif %}
-                                {% if producto.stock == 1 %}
-                                <span class="badge oferta">ÚNICA PIEZA</span>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="producto-info">
-                            <span class="categoria">{{ producto.categoria }}</span>
-                            <h4>{{ producto.nombre }}</h4>
-                            <span class="talla">Talla: {{ producto.talla }}</span>
-                            <p class="precio">${{ producto.precio|format_cop }} COP</p>
-
-                            <div class="producto-actions">
-                                <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
-                            </div>
+                        <div class="producto-badges">
+                            {% if producto.stock == 1 %}
+                            <span class="badge nuevo">ÚNICA PIEZA</span>
+                            {% endif %}
                         </div>
                     </div>
-                    {% endfor %}
+
+                    <div class="producto-info">
+                        <span class="categoria">{{ producto.categoria }}</span>
+                        <h4>{{ producto.nombre }}</h4>
+                        <span class="talla">Talla: {{ producto.talla }}</span>
+                        <p class="precio">${{ producto.precio|format_cop }} COP</p>
+
+                        <div class="producto-actions">
+                            <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
             {% else %}
-                <div class="no-productos">
-                    <h3>No hay productos disponibles</h3>
-                    <p>Aún no hay productos disponibles</p>
-                    <a href="/admin" class="btn-primary" style="display: inline-block; margin-top: 2rem;">Agregar Productos</a>
-                </div>
+            <p style="text-align: center; color: var(--light-gray); padding: 3rem;">
+                No hay productos disponibles. <a href="/admin" style="color: var(--wine);">Agrega productos aquí</a>
+            </p>
             {% endif %}
         </section>
 
-        <!-- Sección informativa -->
-        <section class="info-upcycling">
-            <div class="info-content">
-                <h2>Por qué Upcycling</h2>
-                <p>El upcycling es una práctica de moda sostenible que transforma prendas pre-amadas en piezas únicas. En thriftstorecol, cada producto tiene una segunda oportunidad de brillar.</p>
+        <!-- Dashboard de Sostenibilidad -->
+        <section class="dashboard-section">
+            <h2>Impacto de la Moda Sostenible</h2>
 
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number">85%</div>
-                        <p>Reducción en consumo de agua</p>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">70%</div>
-                        <p>Menos emisiones de CO2</p>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <p>Piezas únicas y originales</p>
-                    </div>
+            <div class="metricas-cards">
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="total-prendas">0</div>
+                    <p>Prendas Upcycling</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="piezas-unicas">0</div>
+                    <p>Piezas Únicas</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="co2-ahorrado">0</div>
+                    <p>Kg CO2 Ahorrados</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="agua-ahorrada">0</div>
+                    <p>Litros de Agua Ahorrados</p>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="chart-container">
+                    <h4>Impacto Ambiental</h4>
+                    <div id="chart-impacto"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h4>Distribución por Categoría</h4>
+                    <div id="chart-categorias"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h4>Consumo Sostenible Mensual</h4>
+                    <div id="chart-consumo"></div>
                 </div>
             </div>
         </section>
-    {% endif %}
-</main>
+    </main>
 
     <footer>
         <p>thriftstorecol</p>
-        <p style="margin-top: 0.5rem;">Moda · Sostenible · Único</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
+
+    <script>
+        // Cargar métricas generales
+        fetch('/api/dashboard/metricas-generales')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('total-prendas').textContent = data.total_prendas;
+                document.getElementById('piezas-unicas').textContent = data.piezas_unicas;
+                document.getElementById('co2-ahorrado').textContent = data.kg_co2_ahorrado.toLocaleString();
+                document.getElementById('agua-ahorrada').textContent = data.litros_agua_ahorrados.toLocaleString();
+            });
+
+        // Gráfico de Impacto Ambiental
+        fetch('/api/dashboard/impacto-ambiental')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: [{
+                        name: 'Impacto',
+                        data: data.values
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 300,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            horizontal: true,
+                        }
+                    },
+                    dataLabels: { enabled: false },
+                    xaxis: {
+                        categories: data.labels,
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    colors: ['#722F37'],
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-impacto"), options);
+                chart.render();
+            });
+
+        // Gráfico de Categorías
+        fetch('/api/dashboard/prendas-por-categoria')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: data.values,
+                    chart: {
+                        type: 'donut',
+                        height: 300,
+                        background: 'transparent'
+                    },
+                    labels: data.labels,
+                    colors: ['#722F37', '#A44A54', '#4A1C23', '#F5F5DC', '#B8B8B8'],
+                    legend: {
+                        labels: { colors: '#B8B8B8' }
+                    },
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-categorias"), options);
+                chart.render();
+            });
+
+        // Gráfico de Consumo Mensual
+        fetch('/api/dashboard/consumo-mensual')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: [{
+                        name: 'Prendas',
+                        data: data.values
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 300,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', colors: ['#722F37'] },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.7,
+                            opacityTo: 0.3,
+                        }
+                    },
+                    xaxis: {
+                        categories: data.labels,
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    colors: ['#722F37'],
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-consumo"), options);
+                chart.render();
+            });
+    </script>
 </body>
 </html>

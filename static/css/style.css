@@ -724,24 +724,42 @@ footer p:first-child {
     }
 }
 
-/* CARRUSEL PRODUCTOS DESTACADOS */
+/* PRODUCTOS DESTACADOS (4 en grid) */
 .productos-destacados {
     margin: 3rem 0 5rem;
 }
 
-.carrusel-container {
-    position: relative;
-    overflow: hidden;
+.productos-destacados h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 3rem;
+    font-weight: 700;
 }
 
-.carrusel {
+.productos-grid-destacados {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
 }
 
-/* SECCIÓN INFORMATIVA */
-.info-upcycling {
+/* SECCIÓN DE CATEGORÍA */
+.categoria-section {
+    margin: 3rem 0;
+}
+
+.categoria-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
+
+/* DASHBOARD DE SOSTENIBILIDAD */
+.dashboard-section {
     background: var(--dark-gray);
     padding: 5rem 2rem;
     margin: 5rem 0;
@@ -749,57 +767,85 @@ footer p:first-child {
     border: 1px solid var(--wine);
 }
 
-.info-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.info-content h2 {
+.dashboard-section h2 {
     font-family: 'Playfair Display', serif;
     font-size: 3rem;
     color: var(--cream);
-    margin-bottom: 2rem;
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
-.info-content p {
-    font-size: 1.2rem;
-    color: var(--light-gray);
-    line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto 3rem;
-}
-
-.stats-grid {
+.metricas-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
-    margin-top: 4rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
 }
 
-.stat-item {
+.metrica-card {
+    background: var(--medium-gray);
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--wine);
+}
+
+.metrica-numero {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3rem;
+    color: var(--wine);
+    margin-bottom: 0.5rem;
+}
+
+.metrica-card p {
+    color: var(--light-gray);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.chart-container {
+    background: var(--medium-gray);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--wine);
+}
+
+.chart-container h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
     text-align: center;
 }
 
-.stat-number {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 4rem;
-    color: var(--wine);
-    margin-bottom: 1rem;
-}
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .productos-grid-destacados {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
-.stat-item p {
-    font-size: 1.1rem;
-    color: var(--light-gray);
-    margin: 0;
+    .metricas-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-    .carrusel {
+    .productos-grid-destacados {
         grid-template-columns: 1fr;
     }
 
-    .stats-grid {
+    .metricas-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
         grid-template-columns: 1fr;
     }
 }
