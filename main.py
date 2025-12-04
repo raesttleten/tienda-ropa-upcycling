@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends, Form, UploadFile, File, HTTPException
+from fastapi import FastAPI, Request, Depends, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -9,17 +9,10 @@ import models
 import os
 import shutil
 
-# --- para auth ---
-from passlib.context import CryptContext
-from starlette.middleware.sessions import SessionMiddleware
-
 # Crear las tablas en la base de datos
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-# Middleware de sesiones (cambiar SECRET por algo seguro en prod / Railway env var)
-app.add_middleware(SessionMiddleware, secret_key="CAMBIA_POR_UNA_SECRETA")
 
 # Crear carpetas si no existen
 os.makedirs("static/uploads", exist_ok=True)
@@ -29,32 +22,14 @@ os.makedirs("static/images", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Contexto para hashear contraseñas
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ================= utilidades =================
+# Filtro personalizado para formatear precios
 def format_cop(value):
     return "{:,.0f}".format(value).replace(",", ".")
 
+
 templates.env.filters["format_cop"] = format_cop
 
-def get_current_user(request: Request, db: Session = Depends(get_db)):
-    session = request.session
-    if not session or "user_id" not in session:
-        return None
-    user = db.query(models.User).filter(models.User.id == session["user_id"]).first()
-    return user
-
-# Crear admin por defecto si no existe (cambiar email/clave si quieres)
-def ensure_default_admin(db: Session):
-    admin_email = "admin@example.com"
-    admin_password = "admin123"  # cámbiala en producción
-    admin = db.query(models.User).filter(models.User.email == admin_email).first()
-    if not admin:
-        hashed = pwd_context.hash(admin_password)
-        new_admin = models.User(email=admin_email, password=hashed, role="admin")
-        db.add(new_admin)
-        db.commit()
 
 # ==================== API DASHBOARD ====================
 
@@ -65,6 +40,7 @@ async def get_impacto_ambiental():
         "values": [85, 70, 90, 65],
         "units": ["%", "%", "%", "%"]
     }
+
 
 @app.get("/api/dashboard/prendas-por-categoria")
 async def get_prendas_por_categoria(db: Session = Depends(get_db)):
@@ -78,12 +54,14 @@ async def get_prendas_por_categoria(db: Session = Depends(get_db)):
         "values": list(conteo.values()) if conteo else [0]
     }
 
+
 @app.get("/api/dashboard/consumo-mensual")
 async def get_consumo_mensual():
     return {
         "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
         "values": [12, 19, 15, 25, 22, 30]
     }
+
 
 @app.get("/api/dashboard/metricas-generales")
 async def get_metricas_generales(db: Session = Depends(get_db)):
@@ -97,6 +75,7 @@ async def get_metricas_generales(db: Session = Depends(get_db)):
         "kg_co2_ahorrado": total_productos * 15,
         "litros_agua_ahorrados": total_productos * 2700
     }
+
 
 # ==================== RUTAS DE VISTAS (HTML) ====================
 
@@ -113,25 +92,23 @@ async def home(request: Request, db: Session = Depends(get_db)):
         ).order_by(models.Producto.id.desc()).limit(faltantes).all()
         productos_destacados.extend(adicionales)
 
-    user = get_current_user(request, db)
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "productos_destacados": productos_destacados,
-        "user": user
+        "productos_destacados": productos_destacados
     })
+
 
 @app.get("/categoria/{categoria}", response_class=HTMLResponse)
 async def categoria(request: Request, categoria: str, db: Session = Depends(get_db)):
     """Página de categoría"""
     productos = db.query(models.Producto).filter(models.Producto.categoria == categoria).all()
-    user = get_current_user(request, db)
 
     return templates.TemplateResponse("categoria.html", {
         "request": request,
         "productos": productos,
-        "categoria": categoria,
-        "user": user
+        "categoria": categoria
     })
+
 
 @app.get("/buscar", response_class=HTMLResponse)
 async def buscar(request: Request, q: str, db: Session = Depends(get_db)):
@@ -141,14 +118,13 @@ async def buscar(request: Request, q: str, db: Session = Depends(get_db)):
         models.Producto.descripcion.contains(q) |
         models.Producto.categoria.contains(q)
     ).all()
-    user = get_current_user(request, db)
 
     return templates.TemplateResponse("categoria.html", {
         "request": request,
         "productos": productos,
-        "categoria": f"Resultados para '{q}'",
-        "user": user
+        "categoria": f"Resultados para '{q}'"
     })
+
 
 @app.get("/producto/{producto_id}", response_class=HTMLResponse)
 async def detalle_producto(request: Request, producto_id: int, db: Session = Depends(get_db)):
@@ -163,68 +139,18 @@ async def detalle_producto(request: Request, producto_id: int, db: Session = Dep
         models.Producto.id != producto_id
     ).limit(4).all()
 
-    user = get_current_user(request, db)
     return templates.TemplateResponse("detalle.html", {
         "request": request,
         "producto": producto,
-        "productos_relacionados": productos_relacionados,
-        "user": user
+        "productos_relacionados": productos_relacionados
     })
 
-# ==================== AUTH: Registro / Login / Logout ====================
 
-@app.get("/registro", response_class=HTMLResponse)
-async def registro_get(request: Request):
-    return templates.TemplateResponse("registro.html", {"request": request})
-
-@app.post("/registro")
-async def registro_post(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    # validar existencia
-    existe = db.query(models.User).filter(models.User.email == email).first()
-    if existe:
-        return templates.TemplateResponse("registro.html", {"request": request, "error": "El usuario ya existe"})
-    hashed = pwd_context.hash(password)
-    nuevo = models.User(email=email, password=hashed, role="user")
-    db.add(nuevo)
-    db.commit()
-    # auto-login tras registro
-    request.session["user_id"] = nuevo.id
-    request.session["role"] = nuevo.role
-    return RedirectResponse(url="/", status_code=303)
-
-@app.get("/login", response_class=HTMLResponse)
-async def login_get(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
-
-@app.post("/login")
-async def login_post(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == email).first()
-    if not user or not pwd_context.verify(password, user.password):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Credenciales inválidas"})
-    # guardar sesión
-    request.session["user_id"] = user.id
-    request.session["role"] = user.role
-    # redirigir según rol
-    if user.role == "admin":
-        return RedirectResponse(url="/admin", status_code=303)
-    return RedirectResponse(url="/", status_code=303)
-
-@app.get("/logout")
-async def logout(request: Request):
-    request.session.clear()
-    return RedirectResponse(url="/", status_code=303)
-
-# ==================== ADMIN (PROTEGIDO) ====================
+# ==================== ADMIN (SIN LOGIN) ====================
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin(request: Request, db: Session = Depends(get_db)):
-    """Panel de administrador (protegido)"""
-    user = get_current_user(request, db)
-    if not user:
-        return RedirectResponse(url="/login", status_code=303)
-    if user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tienes permisos para ver esta página")
-
+    """Panel de administrador"""
     productos = db.query(models.Producto).all()
     total_productos = len(productos)
     total_stock = sum([p.stock for p in productos])
@@ -235,16 +161,12 @@ async def admin(request: Request, db: Session = Depends(get_db)):
         "productos": productos,
         "total_productos": total_productos,
         "total_stock": total_stock,
-        "valor_inventario": valor_inventario,
-        "user": user
+        "valor_inventario": valor_inventario
     })
+
 
 @app.get("/admin/editar/{producto_id}", response_class=HTMLResponse)
 async def obtener_producto_editar(request: Request, producto_id: int, db: Session = Depends(get_db)):
-    user = get_current_user(request, db)
-    if not user or user.role != "admin":
-        return RedirectResponse(url="/login", status_code=303)
-
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     productos = db.query(models.Producto).all()
     total_productos = len(productos)
@@ -257,9 +179,9 @@ async def obtener_producto_editar(request: Request, producto_id: int, db: Sessio
         "producto_editar": producto,
         "total_productos": total_productos,
         "total_stock": total_stock,
-        "valor_inventario": valor_inventario,
-        "user": user
+        "valor_inventario": valor_inventario
     })
+
 
 @app.post("/admin/agregar")
 async def agregar_producto(
@@ -270,13 +192,9 @@ async def agregar_producto(
         categoria: str = Form(...),
         imagen_url: str = Form(...),
         stock: int = Form(...),
-        db: Session = Depends(get_db),
-        request: Request = None
+        db: Session = Depends(get_db)
 ):
-    user = get_current_user(request, db)
-    if not user or user.role != "admin":
-        raise HTTPException(status_code=403, detail="No autorizado")
-
+    """Agregar producto"""
     nuevo_producto = models.Producto(
         nombre=nombre,
         descripcion=descripcion,
@@ -291,6 +209,7 @@ async def agregar_producto(
 
     return RedirectResponse(url="/admin", status_code=303)
 
+
 @app.post("/admin/actualizar/{producto_id}")
 async def actualizar_producto(
         producto_id: int,
@@ -301,13 +220,9 @@ async def actualizar_producto(
         categoria: str = Form(...),
         imagen_url: str = Form(...),
         stock: int = Form(...),
-        db: Session = Depends(get_db),
-        request: Request = None
+        db: Session = Depends(get_db)
 ):
-    user = get_current_user(request, db)
-    if not user or user.role != "admin":
-        raise HTTPException(status_code=403, detail="No autorizado")
-
+    """Actualizar producto"""
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     if producto:
         producto.nombre = nombre
@@ -321,12 +236,10 @@ async def actualizar_producto(
 
     return RedirectResponse(url="/admin", status_code=303)
 
-@app.get("/admin/eliminar/{producto_id}")
-async def eliminar_producto(producto_id: int, db: Session = Depends(get_db), request: Request = None):
-    user = get_current_user(request, db)
-    if not user or user.role != "admin":
-        raise HTTPException(status_code=403, detail="No autorizado")
 
+@app.get("/admin/eliminar/{producto_id}")
+async def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
+    """Eliminar producto"""
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     if producto:
         db.delete(producto)
@@ -334,19 +247,9 @@ async def eliminar_producto(producto_id: int, db: Session = Depends(get_db), req
 
     return RedirectResponse(url="/admin", status_code=303)
 
-# ==================== RUTAS DE CUENTA ====================
 
-@app.get("/mi-cuenta", response_class=HTMLResponse)
-async def account(request: Request, db: Session = Depends(get_db)):
-    user = get_current_user(request, db)
-    if not user:
-        return RedirectResponse(url="/login", status_code=303)
-    return templates.TemplateResponse("mi-cuenta.html", {"request": request, "user": user})
-
-# Ejecutar servidor (útil para pruebas locales)
+# Ejecutar servidor
 if __name__ == "__main__":
     import uvicorn
-    # crear admin por defecto si no existe
-    db = next(get_db())
-    ensure_default_admin(db)
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
