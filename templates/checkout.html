@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+            <div class="nav-icons">
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="checkout-container">
+            <h2><i class="fas fa-lock"></i> Finalizar Compra</h2>
+
+            <div class="checkout-grid">
+                <!-- Formulario de datos de envío -->
+                <div class="checkout-form">
+                    <h3>Datos de Envío</h3>
+
+                    <form id="checkoutForm">
+                        <div class="form-group">
+                            <label for="direccion_envio">Dirección de Envío *</label>
+                            <textarea id="direccion_envio" name="direccion_envio" required rows="3"
+                                      placeholder="Calle, número, apartamento...">{{ usuario.direccion or '' }}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ciudad">Ciudad *</label>
+                            <input type="text" id="ciudad" name="ciudad" required
+                                   value="{{ usuario.ciudad or '' }}" placeholder="Bogotá">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">Teléfono de Contacto *</label>
+                            <input type="tel" id="telefono" name="telefono" required
+                                   value="{{ usuario.telefono or '' }}" placeholder="+57 300 123 4567">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notas">Notas del Pedido (opcional)</label>
+                            <textarea id="notas" name="notas" rows="3"
+                                      placeholder="Instrucciones especiales de entrega..."></textarea>
+                        </div>
+
+                        <div id="error-message" class="error-message" style="display: none;"></div>
+                    </form>
+                </div>
+
+                <!-- Resumen del pedido -->
+                <div class="checkout-resumen">
+                    <h3>Resumen del Pedido</h3>
+
+                    <div id="loading-resumen" style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--wine);"></i>
+                    </div>
+
+                    <div id="resumen-contenido" style="display: none;">
+                        <div class="resumen-items" id="resumen-items">
+                            <!-- Items se cargan aquí -->
+                        </div>
+
+                        <div class="resumen-totales">
+                            <div class="resumen-linea">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0 COP</span>
+                            </div>
+                            <div class="resumen-linea">
+                                <span>Envío:</span>
+                                <span>GRATIS</span>
+                            </div>
+                            <div class="resumen-total">
+                                <span>Total:</span>
+                                <span id="total">$0 COP</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="realizarPedidoBtn" class="btn-primary btn-full">
+                            <i class="fas fa-check-circle"></i> Realizar Pedido
+                        </button>
+
+                        <p class="checkout-nota">
+                            <i class="fas fa-info-circle"></i>
+                            Se simulará el pago para fines de demostración
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
+    </footer>
+
+    <script>
+        let carritoData = null;
+        let pedidoId = null;
+
+        function formatearPrecio(valor) {
+            return new Intl.NumberFormat('es-CO').format(valor);
+        }
+
+        // Cargar resumen del carrito
+        async function cargarResumen() {
+            try {
+                const response = await fetch('/api/carrito');
+                const data = await response.json();
+                carritoData = data;
+
+                if (data.items.length === 0) {
+                    window.location.href = '/carrito';
+                    return;
+                }
+
+                const itemsContainer = document.getElementById('resumen-items');
+                itemsContainer.innerHTML = '';
+
+                data.items.forEach(item => {
+                    itemsContainer.innerHTML += `
+                        <div class="resumen-item">
+                            <img src="${item.producto.imagen_url}" alt="${item.producto.nombre}">
+                            <div class="resumen-item-info">
+                                <h4>${item.producto.nombre}</h4>
+                                <p>Cantidad: ${item.cantidad}</p>
+                            </div>
+                            <span class="resumen-item-precio">$${formatearPrecio(item.subtotal)}</span>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('subtotal').textContent = `$${formatearPrecio(data.total)} COP`;
+                document.getElementById('total').textContent = `$${formatearPrecio(data.total)} COP`;
+
+                document.getElementById('loading-resumen').style.display = 'none';
+                document.getElementById('resumen-contenido').style.display = 'block';
+            } catch (error) {
+                console.error('Error al cargar resumen:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Realizar pedido
+        document.getElementById('realizarPedidoBtn').addEventListener('click', async () => {
+            const form = document.getElementById('checkoutForm');
+            const errorMessage = document.getElementById('error-message');
+            const btn = document.getElementById('realizarPedidoBtn');
+
+            // Validar formulario
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Deshabilitar botón
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            errorMessage.style.display = 'none';
+
+            try {
+                const formData = new FormData(form);
+
+                // Crear pedido
+                const response = await fetch('/api/pedidos/crear', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    pedidoId = data.pedido_id;
+
+                    // Simular pago
+                    const pagoResponse = await fetch(`/api/pedidos/${pedidoId}/pagar`, {
+                        method: 'POST'
+                    });
+
+                    if (pagoResponse.ok) {
+                        // Redirigir a confirmación
+                        window.location.href = `/pedido/${pedidoId}/confirmacion`;
+                    } else {
+                        throw new Error('Error al procesar el pago');
+                    }
+                } else {
+                    errorMessage.textContent = data.detail || 'Error al crear el pedido';
+                    errorMessage.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Realizar Pedido';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Error al procesar el pedido. Intenta de nuevo.';
+                errorMessage.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Realizar Pedido';
+            }
+        });
+
+        // Cargar al iniciar
+        cargarResumen();
+    </script>
+</body>
+</html>
