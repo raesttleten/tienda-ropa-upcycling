@@ -1,4 +1,4 @@
-# ThriftStoreCol
+# ThriftStoreCol ദ്ദി◝ ⩊ ◜.ᐟ⋆𐙚₊˚⊹♡
 
 ## Descripción
 ThriftStoreCol es una plataforma de comercio electrónico de moda vintage y sostenible. Permite explorar productos por categoría, agregar al carrito, realizar un checkout simulado y gestionar productos desde un panel administrativo. Incluye dashboard con métricas de sostenibilidad.
@@ -9,42 +9,50 @@ ThriftStoreCol es una plataforma de comercio electrónico de moda vintage y sost
 - Frontend: HTML, CSS, JS, Jinja2 Templates
 - Gráficos: ApexCharts
 
-## Instalación y ejecución
-1. Clonar el repositorio:
-bash
-git clone <URL_DEL_REPOSITORIO>
-cd <NOMBRE_DEL_PROYECTO>
-Crear y activar entorno virtual:
+## Estructura del proyecto
 
-bash
-Copiar código
+/app
+│── main.py               # Archivo principal de FastAPI
+│── database.py           # Configuración de la base de datos
+│── models.py             # Modelos ORM
+│── /templates            # Plantillas HTML
+│── /static               # Archivos estáticos: CSS, JS, imágenes
+
+## Instalación y Ejecución
+1.	Clonar el repositorio:
+  git clone <URL_DEL_REPOSITORIO>
+cd <NOMBRE_REPOSITORIO>
+
+2.	Crear entorno virtual e instalar dependencias:
+
 python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/macOS
-source venv/bin/activate
-Instalar dependencias:
-
-bash
-Copiar código
+venv\Scripts\activate      # Windows
+# o
+source venv/bin/activate   # Linux/Mac
 pip install -r requirements.txt
-Configurar base de datos:
 
-SQLite: se crea automáticamente.
+3.	Configurar la base de datos:
 
-PostgreSQL: modificar DATABASE_URL en database.py.
+	•	SQLite: se crea automáticamente al iniciar la app.
+	•	PostgreSQL: actualizar la URL de conexión en database.py.
 
-Iniciar la aplicación:
+4.	Ejecutar la aplicación:
+python main.py
 
-bash
-Copiar código
-uvicorn main:app --reload
-Abrir en navegador:
+Abrir en el navegador: http://127.0.0.1:8000
 
-cpp
-Copiar código
-http://127.0.0.1:8000/
-https://tienda-ropa-upcycling-production-3f81.up.railway.app
 
-Imagenes:
-https://co.pinterest.com/raesttleten/closetsale/
+Recursos Adicionales⋆˚꩜｡
+	•	Copiar código: http://127.0.0.1:8000/https://tienda-ropa-upcycling-production-3f81.up.railway.app￼
+	•	Imágenes e inspiración: Pinterest Closet Sale￼
+
+Funcionalidades(˶˃ ᵕ ˂˶)
+	•	Visualización de productos destacados y filtrado por categoría
+	•	Carrito de compras y simulación de checkout
+	•	Dashboard con métricas de sostenibilidad
+	•	Gestión de productos y métricas para administradores
+	•	Registro, inicio de sesión y control de usuarios
+
+
+  
+
