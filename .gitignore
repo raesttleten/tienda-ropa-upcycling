@@ -1,18 +1,39 @@
-# Base de datos
-*.db
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Virtual Environment
 venv/
 env/
 ENV/
+.venv
 
-# PyCharm
+# Environment variables
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# IDE
+.vscode/
 .idea/
+*.swp
+*.swo
 
-# Otros
+# OS
 .DS_Store
+Thumbs.db
+
+# Uploads (mantén los directorios pero no los archivos)
+static/uploads/*
+!static/uploads/.gitkeep
+static/images/*
+!static/images/.gitkeep
