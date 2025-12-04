@@ -1,8 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, Text
-from database import Base
 from sqlalchemy import Column, Integer, String, Float, Text, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-
+from database import Base
 
 class Producto(Base):
     __tablename__ = "productos"
@@ -16,17 +14,17 @@ class Producto(Base):
     imagen_url = Column(String, nullable=False)
     stock = Column(Integer, default=1)
 
-from sqlalchemy import Column, Integer, String, Boolean
-from database import Base
-
 class Usuario(Base):
     __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    contraseña = Column(String, nullable=False)  # hash
+    correo = Column(String, unique=True, index=True, nullable=False)
+    contrasena = Column(String, nullable=False)  # hash
     es_admin = Column(Boolean, default=False)
+
+    carrito = relationship("Carrito", back_populates="usuario")
+    pedidos = relationship("Pedido", back_populates="usuario")
 
 class Carrito(Base):
     __tablename__ = "carrito"
@@ -39,7 +37,6 @@ class Carrito(Base):
     usuario = relationship("Usuario", back_populates="carrito")
     producto = relationship("Producto")
 
-
 class Pedido(Base):
     __tablename__ = "pedidos"
 
@@ -49,19 +46,3 @@ class Pedido(Base):
     fecha = Column(String)
 
     usuario = relationship("Usuario", back_populates="pedidos")
-
-    from sqlalchemy import Column, Integer, String, Boolean
-    from database import Base
-
-
-class Usuario(Base):
-    __tablename__ = "usuarios"
-    __table_args__ = {"extend_existing": True}
-
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, nullable=False)
-    correo = Column(String, unique=True, index=True, nullable=False)
-    contrasena = Column(String, nullable=False)
-    es_admin = Column(Boolean, default=False)
-
-
