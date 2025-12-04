@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+            <div class="nav-icons">
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <div class="auth-box">
+                <h2>Crear Cuenta</h2>
+                <p class="auth-subtitle">Únete a la comunidad de moda sostenible</p>
+
+                <form id="registroForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono (opcional)</label>
+                        <input type="tel" id="telefono" name="telefono">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" name="password" required>
+                        <small>Mínimo 8 caracteres, incluir mayúscula, minúscula y número</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">Confirmar Contraseña</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn-primary" id="registroBtn">
+                        <span>Crear Cuenta</span>
+                        <i class="fas fa-spinner fa-spin" style="display: none;"></i>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
+    </footer>
