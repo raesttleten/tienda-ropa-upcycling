@@ -69,7 +69,10 @@
                         <p class="precio">${{ producto.precio|format_cop }} COP</p>
 
                         <div class="producto-actions">
-                            <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
+                        <button onclick="agregarAlCarrito('{{ producto.id }}')" class="btn-add-cart">
+                        <i class="fas fa-shopping-bag"></i> Agregar
+                        </button>
+                        <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
                         </div>
                     </div>
                 </div>
@@ -88,5 +91,201 @@
         <p>thriftstorecol</p>
         <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
+
+    <script>
+        // ==================== VERIFICAR AUTENTICACIÓN ====================
+        async function verificarAutenticacion() {
+            try {
+                const response = await fetch('/api/auth/usuario-actual');
+                const data = await response.json();
+
+                if (data.autenticado) {
+                    document.getElementById('miCuentaLink').href = '/mi-cuenta';
+
+                    // Cargar cantidad de items en carrito
+                    const carritoResponse = await fetch('/api/carrito');
+                    if (carritoResponse.ok) {
+                        const carritoData = await carritoResponse.json();
+                        if (carritoData.total_items > 0) {
+                            const badge = document.getElementById('carrito-badge');
+                            badge.textContent = carritoData.total_items;
+                            badge.style.display = 'block';
+                        }
+                    }
+                } else {
+                    document.getElementById('miCuentaLink').href = '/login';
+                }
+            } catch (error) {
+                document.getElementById('miCuentaLink').href = '/login';
+            }
+        }
+
+        // ==================== AGREGAR AL CARRITO ====================
+        async function agregarAlCarrito(productoId) {
+            try {
+                const formData = new FormData();
+                formData.append('producto_id', productoId);
+                formData.append('cantidad', 1);
+
+                const response = await fetch('/api/carrito/agregar', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Actualizar badge del carrito
+                    const badge = document.getElementById('carrito-badge');
+                    badge.textContent = data.total_items;
+                    badge.style.display = 'block';
+
+                    // Mostrar notificación
+                    mostrarNotificacion('¡Producto agregado al carrito!', 'success');
+                } else if (response.status === 401) {
+                    // No autenticado
+                    mostrarNotificacion('Debes iniciar sesión para agregar productos', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                } else {
+                    mostrarNotificacion(data.detail || 'Error al agregar producto', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarNotificacion('Error al agregar producto', 'error');
+            }
+        }
+
+        // ==================== NOTIFICACIONES ====================
+        function mostrarNotificacion(mensaje, tipo) {
+            // Crear elemento de notificación
+            const notif = document.createElement('div');
+            notif.className = `notificacion notificacion-${tipo}`;
+            notif.innerHTML = `
+                <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${mensaje}</span>
+            `;
+
+            document.body.appendChild(notif);
+
+            // Animar entrada
+            setTimeout(() => notif.classList.add('show'), 100);
+
+            // Eliminar después de 3 segundos
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // ==================== DASHBOARD (código existente) ====================
+        fetch('/api/dashboard/metricas-generales')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('total-prendas').textContent = data.total_prendas;
+                document.getElementById('piezas-unicas').textContent = data.piezas_unicas;
+                document.getElementById('co2-ahorrado').textContent = data.kg_co2_ahorrado.toLocaleString();
+                document.getElementById('agua-ahorrada').textContent = data.litros_agua_ahorrados.toLocaleString();
+            });
+
+        fetch('/api/dashboard/impacto-ambiental')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: [{
+                        name: 'Impacto',
+                        data: data.values
+                    }],
+                    chart: {
+                        type: 'bar',
+                        height: 300,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            horizontal: true,
+                        }
+                    },
+                    dataLabels: { enabled: false },
+                    xaxis: {
+                        categories: data.labels,
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    colors: ['#722F37'],
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-impacto"), options);
+                chart.render();
+            });
+
+        fetch('/api/dashboard/prendas-por-categoria')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: data.values,
+                    chart: {
+                        type: 'donut',
+                        height: 300,
+                        background: 'transparent'
+                    },
+                    labels: data.labels,
+                    colors: ['#722F37', '#A44A54', '#4A1C23', '#F5F5DC', '#B8B8B8'],
+                    legend: {
+                        labels: { colors: '#B8B8B8' }
+                    },
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-categorias"), options);
+                chart.render();
+            });
+
+        fetch('/api/dashboard/consumo-mensual')
+            .then(res => res.json())
+            .then(data => {
+                const options = {
+                    series: [{
+                        name: 'Prendas',
+                        data: data.values
+                    }],
+                    chart: {
+                        type: 'area',
+                        height: 300,
+                        background: 'transparent',
+                        toolbar: { show: false }
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', colors: ['#722F37'] },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.7,
+                            opacityTo: 0.3,
+                        }
+                    },
+                    xaxis: {
+                        categories: data.labels,
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#B8B8B8' } }
+                    },
+                    colors: ['#722F37'],
+                    theme: { mode: 'dark' }
+                };
+                const chart = new ApexCharts(document.querySelector("#chart-consumo"), options);
+                chart.render();
+            });
+
+        // Verificar autenticación al cargar
+        verificarAutenticacion();
+    </script>
+
 </body>
 </html>
