@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import engine, get_db
+from flask import Flask
+app = Flask(__name__)
 from datetime import datetime
 import models
 import os
@@ -253,3 +255,6 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+if __name__ == '__main__':
+    app.run(debug=True)
