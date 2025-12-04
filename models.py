@@ -1,63 +1,53 @@
-from sqlalchemy import Column, Integer, String, Float, Text, Boolean, ForeignKey
+# ...existing code...
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from database import Base
+from sqlalchemy.ext.declarative import declarative_base
 
-class Producto(Base):
-    __tablename__ = "productos"
-
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, index=True, nullable=False)
-    descripcion = Column(Text, nullable=False)
-    precio = Column(Float, nullable=False)
-    talla = Column(String, nullable=False)
-    categoria = Column(String, nullable=False)
-    imagen_url = Column(String, nullable=False)
-    stock = Column(Integer, default=1)
-
-    def __repr__(self):
-        return f"<Producto(id={self.id}, nombre='{self.nombre}', categoria='{self.categoria}')>"
-
+Base = declarative_base()
 
 class Usuario(Base):
     __tablename__ = "usuarios"
-
     id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, nullable=False)
-    correo = Column(String, unique=True, index=True, nullable=False)
-    contrasena = Column(String, nullable=False)  # hash
+    nombre = Column(String(100), nullable=False)
+    correo = Column(String(150), unique=True, index=True, nullable=False)
+    contrasena = Column(String(255), nullable=False)
     es_admin = Column(Boolean, default=False)
 
-    carrito = relationship("Carrito", back_populates="usuario", cascade="all, delete-orphan")
     pedidos = relationship("Pedido", back_populates="usuario", cascade="all, delete-orphan")
+    carrito = relationship("Carrito", back_populates="usuario", cascade="all, delete-orphan")
 
-    def __repr__(self):
-        return f"<Usuario(id={self.id}, nombre='{self.nombre}', correo='{self.correo}', admin={self.es_admin})>"
+class Producto(Base):
+    __tablename__ = "productos"
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(200), nullable=False)
+    descripcion = Column(Text, default="")
+    precio = Column(Float, default=0.0)
+    talla = Column(String(20), default="")
+    categoria = Column(String(100), default="General")
+    imagen_url = Column(String(500), default="")
+    stock = Column(Integer, default=0)
 
+    carrito_items = relationship("Carrito", back_populates="producto", cascade="all, delete-orphan")
 
 class Carrito(Base):
     __tablename__ = "carrito"
-
     id = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False)
-    producto_id = Column(Integer, ForeignKey("productos.id", ondelete="CASCADE"), nullable=False)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    producto_id = Column(Integer, ForeignKey("productos.id"), nullable=False)
     cantidad = Column(Integer, default=1)
 
     usuario = relationship("Usuario", back_populates="carrito")
-    producto = relationship("Producto")
-
-    def __repr__(self):
-        return f"<Carrito(id={self.id}, usuario_id={self.usuario_id}, producto_id={self.producto_id}, cantidad={self.cantidad})>"
-
+    producto = relationship("Producto", back_populates="carrito_items")
 
 class Pedido(Base):
     __tablename__ = "pedidos"
-
     id = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False)
-    estado = Column(String, default="pendiente")  # pendiente, confirmado, cancelado
-    fecha = Column(String, nullable=False)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    estado = Column(String(50), default="pendiente")
+    fecha = Column(String(100))
 
     usuario = relationship("Usuario", back_populates="pedidos")
+# ...existing code...
 
     def __repr__(self):
         return f"<Pedido(id={self.id}, usuario_id={self.usuario_id}, estado='{self.estado}', fecha='{self.fecha}')>"

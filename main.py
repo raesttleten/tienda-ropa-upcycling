@@ -1,3 +1,4 @@
+# ...existing code...
 import os
 import logging
 from datetime import datetime
@@ -9,8 +10,11 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from passlib.hash import bcrypt
+from pathlib import Path
+import re
 
 import models
+import database  # importa el módulo para acceder a DATABASE_URL y engine
 from database import get_db, init_models
 
 # -------------------- CONFIGURACIÓN DE LOGGING --------------------
@@ -20,6 +24,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# -------------------- RUTAS / RUTA BASE DEL PROYECTO --------------------
+BASE_DIR = Path(__file__).resolve().parent
 
 # -------------------- LIFESPAN EVENTS --------------------
 @asynccontextmanager
@@ -27,16 +33,30 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("🚀 Iniciando aplicación...")
     try:
-        # Crear directorios necesarios
-        os.makedirs("static/uploads", exist_ok=True)
-        os.makedirs("static/images", exist_ok=True)
-        logger.info("✓ Directorios creados")
+        # Crear directorios necesarios en la ruta del proyecto
+        static_dir = BASE_DIR / "static"
+        uploads_dir = static_dir / "uploads"
+        images_dir = static_dir / "images"
+        static_dir.mkdir(exist_ok=True)
+        uploads_dir.mkdir(exist_ok=True)
+        images_dir.mkdir(exist_ok=True)
+        logger.info("✓ Directorios estáticos confirmados")
 
-        # Inicializar base de datos
+        # Mostrar DB URL enmascarada para debugging (no revelar credenciales en logs públicos)
+        db_url = getattr(database, "DATABASE_URL", None)
+        if db_url:
+            # enmascarar credenciales user:pass@
+            masked = re.sub(r"(?<=://)([^:@/]+):([^@/]+)@", "****:****@", db_url)
+            logger.info(f"DB URL (enmascarada): {masked}")
+        else:
+            logger.warning("DATABASE_URL no configurada en módulo database")
+
+        # Inicializar base de datos (crear tablas)
         await init_models()
         logger.info("✓ Base de datos inicializada correctamente")
-    except Exception as e:
-        logger.error(f"✗ Error al inicializar aplicación: {e}")
+    except Exception:
+        logger.exception("✗ Error al inicializar aplicación")
+        # Re-raise para que el proceso de arranque falle claramente (Railway dará 502 si falla aquí)
         raise
 
     yield
@@ -47,11 +67,13 @@ async def lifespan(app: FastAPI):
 
 # -------------------- CONFIGURACIÓN FASTAPI --------------------
 app = FastAPI(lifespan=lifespan, title="EcoWear App")
-templates = Jinja2Templates(directory="templates")
 
-# Montar archivos estáticos
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+# Jinja2Templates usa la ruta absoluta basada en el archivo actual para evitar problemas de cwd
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+# Montar archivos estáticos (solo si existen)
+if (BASE_DIR / "static").exists():
+    app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
     logger.info("✓ Archivos estáticos montados")
 
 
@@ -106,11 +128,12 @@ async def test_db(db: AsyncSession = Depends(get_db)):
             "productos_en_db": productos_count
         }
     except Exception as e:
-        logger.error(f"Error en test de DB: {e}")
+        logger.exception("Error en test de DB")
         raise HTTPException(status_code=500, detail=f"Error de DB: {str(e)}")
 
 
 # -------------------- DASHBOARD --------------------
+# ...existing code...
 @app.get("/api/dashboard/impacto-ambiental")
 async def get_impacto_ambiental():
     return {
@@ -118,7 +141,6 @@ async def get_impacto_ambiental():
         "values": [85, 70, 90, 65],
         "units": ["%", "%", "%", "%"]
     }
-
 
 @app.get("/api/dashboard/prendas-por-categoria")
 async def get_prendas_por_categoria(db: AsyncSession = Depends(get_db)):
@@ -136,14 +158,12 @@ async def get_prendas_por_categoria(db: AsyncSession = Depends(get_db)):
         logger.error(f"Error en prendas por categoría: {e}")
         return {"labels": ["Sin datos"], "values": [0]}
 
-
 @app.get("/api/dashboard/consumo-mensual")
 async def get_consumo_mensual():
     return {
         "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
         "values": [12, 19, 15, 25, 22, 30]
     }
-
 
 @app.get("/api/dashboard/metricas-generales")
 async def get_metricas_generales(db: AsyncSession = Depends(get_db)):
@@ -167,8 +187,8 @@ async def get_metricas_generales(db: AsyncSession = Depends(get_db)):
             "litros_agua_ahorrados": 0
         }
 
-
 # -------------------- VISTAS HTML --------------------
+# ...existing code...
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: AsyncSession = Depends(get_db)):
     try:
@@ -189,8 +209,8 @@ async def home(request: Request, db: AsyncSession = Depends(get_db)):
             "request": request,
             "productos_destacados": productos_destacados
         })
-    except Exception as e:
-        logger.error(f"Error en home: {e}")
+    except Exception:
+        logger.exception("Error en home")
         return templates.TemplateResponse("index.html", {
             "request": request,
             "productos_destacados": []
@@ -452,10 +472,12 @@ async def checkout(request: Request, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Error al procesar el pedido")
 
 
+
 # -------------------- EJECUCIÓN --------------------
 if __name__ == "__main__":
     import uvicorn
 
     port = int(os.environ.get("PORT", 8000))
     logger.info(f"🚀 Iniciando servidor en puerto {port}")
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
+    # pasar el objeto app directamente evita posibles problemas con reload en algunos entornos
+    uvicorn.run(app, host="0.0.0.0", port=port, reload=False)
