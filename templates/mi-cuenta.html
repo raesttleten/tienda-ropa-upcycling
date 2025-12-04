@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+
+            <div class="nav-icons">
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
+                <a href="/carrito" title="Carrito">
+                    <i class="fas fa-shopping-bag"></i>
+                </a>
+                <a href="/mi-cuenta" title="Mi Cuenta" class="active">
+                    <i class="fas fa-user"></i>
+                </a>
+                {% if usuario.rol == 'admin' %}
+                <a href="/admin" title="Admin">
+                    <i class="fas fa-user-shield"></i>
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <div class="categorias">
+        <div class="categorias-inner">
+            <a href="/categoria/Camisas" class="categoria-btn">Camisas</a>
+            <a href="/categoria/Pantalones" class="categoria-btn">Pantalones</a>
+            <a href="/categoria/Faldas" class="categoria-btn">Faldas</a>
+            <a href="/categoria/Bolsos" class="categoria-btn">Bolsos</a>
+            <a href="/categoria/Accesorios" class="categoria-btn">Accesorios</a>
+        </div>
+    </div>
+
+    <main>
+        <div class="cuenta-container">
+            <h2>Mi Cuenta</h2>
+
+            <!-- Información del usuario -->
+            <div class="cuenta-section">
+                <div class="cuenta-header">
+                    <h3><i class="fas fa-user"></i> Información Personal</h3>
+                    <button id="cerrarSesionBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+
+                <div class="cuenta-info">
+                    <div class="info-item">
+                        <strong>Nombre:</strong>
+                        <span>{{ usuario.nombre }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Email:</strong>
+                        <span>{{ usuario.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Teléfono:</strong>
+                        <span>{{ usuario.telefono or 'No registrado' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Dirección:</strong>
+                        <span>{{ usuario.direccion or 'No registrada' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Ciudad:</strong>
+                        <span>{{ usuario.ciudad or 'No registrada' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Miembro desde:</strong>
+                        <span>{{ usuario.fecha_registro.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historial de pedidos -->
+            <div class="cuenta-section">
+                <h3><i class="fas fa-box"></i> Mis Pedidos</h3>
+
+                {% if pedidos %}
+                <div class="pedidos-lista">
+                    {% for pedido in pedidos %}
+                    <div class="pedido-card">
+                        <div class="pedido-header">
+                            <div>
+                                <h4>Pedido #{{ pedido.id }}</h4>
+                                <span class="pedido-fecha">{{ pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') }}</span>
+                            </div>
+                            <span class="pedido-estado estado-{{ pedido.estado }}">{{ pedido.estado.upper() }}</span>
+                        </div>
+
+                        <div class="pedido-items">
+                            {% for item in pedido.items %}
+                            <div class="pedido-item">
+                                <span>{{ item.nombre_producto }} (x{{ item.cantidad }})</span>
+                                <span>${{ item.subtotal|format_cop }} COP</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="pedido-footer">
+                            <div class="pedido-direccion">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{ pedido.direccion_envio }}, {{ pedido.ciudad }}</span>
+                            </div>
+                            <div class="pedido-total">
+                                <strong>Total:</strong> ${{ pedido.total|format_cop }} COP
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-pedidos">
+                    <i class="fas fa-box-open"></i>
+                    <p>Aún no has realizado ningún pedido</p>
+                    <a href="/" class="btn-primary">Explorar productos</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
+    </footer>
+
+    <script>
+        // Cerrar sesión
+        document.getElementById('cerrarSesionBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        });
+    </script>
+</body>
+</html>
