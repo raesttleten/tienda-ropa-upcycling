@@ -1,49 +1,20 @@
-import os
-import logging
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-logger = logging.getLogger(__name__)
+SQLALCHEMY_DATABASE_URL = "sqlite:///./tienda_upcycling.db"
 
-# Obtener URL de la base de datos desde la variable de entorno
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "sqlite+aiosqlite:///./local_dev.db"
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
-# Normalizar URL para usar asyncpg con SQLAlchemy cuando venga de Railway o HEROKU
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
-elif DATABASE_URL.startswith("postgresql://") and "+asyncpg" not in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-logger.info("DB URL normalizada (host enmascarado)")
+Base = declarative_base()
 
-# Crear engine y sessionmaker async
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=False,
-    future=True,
-)
-
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-)
-
-async def get_db():
-    """Dependency: yield una sesión AsyncSession"""
-    async with AsyncSessionLocal() as session:
-        yield session
-
-async def init_models():
-    """Crear tablas si no existen. Importar modelos aquí para evitar ciclos."""
+def get_db():
+    db = SessionLocal()
     try:
-        # import dentro de la función para evitar import cycles
-        from models import Base as ModelsBase
-        async with engine.begin() as conn:
-            await conn.run_sync(ModelsBase.metadata.create_all)
-        logger.info("✓ Tablas creadas/confirmadas en la DB")
-    except Exception as e:
-        logger.exception("Error inicializando modelos DB")
-        raise
+        yield db
+    finally:
+        db.close()
