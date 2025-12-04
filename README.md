@@ -88,34 +88,8 @@ Administración: Usuarios con rol de admin pueden agregar productos y ver métri
 
 Autenticación: Registro, login y logout con manejo de cookies.
 
-Estructura del proyecto
-csharp
-Copiar código
-project/
-│
-├─ main.py                  # Archivo principal de FastAPI
-├─ models.py                # Modelos SQLAlchemy
-├─ database.py              # Configuración de base de datos y init_models
-├─ templates/               # Plantillas Jinja2 (index.html, categoria.html, detalle.html, admin.html, pedido_confirmacion.html)
-├─ static/                  # Archivos estáticos (CSS, JS, imágenes)
-│   ├─ css/
-│   ├─ js/
-│   └─ images/
-├─ requirements.txt         # Dependencias del proyecto
-└─ README.md                # Documentación
-Despliegue en Railway o Heroku
-Cambiar la URL de conexión de la base de datos a PostgreSQL provista por Railway/Heroku.
 
-Instalar psycopg2-binary para PostgreSQL.
 
-Configurar variables de entorno para DATABASE_URL.
-
-La app se encargará de inicializar las tablas al iniciar.
-
-Deploy normal usando GitHub → Railway o Heroku.
-
-Notas importantes
-Si despliegas en un servidor, asegúrate de no usar asyncio.run(init_models()) directamente; deja que la app inicialice la base de datos al arrancar.
 
 La aplicación requiere que el navegador soporte cookies para autenticación y carrito.
 
