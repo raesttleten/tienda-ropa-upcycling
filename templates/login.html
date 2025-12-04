@@ -55,3 +55,58 @@
         <p>thriftstorecol</p>
         <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('error-message');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Mostrar loading
+            loginBtn.querySelector('span').style.display = 'none';
+            loginBtn.querySelector('i').style.display = 'inline-block';
+            loginBtn.disabled = true;
+            errorMessage.style.display = 'none';
+
+            const formData = new FormData(loginForm);
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Login exitoso
+                    if (data.usuario.rol === 'admin') {
+                        window.location.href = '/admin';
+                    } else {
+                        window.location.href = '/';
+                    }
+                } else {
+                    // Error
+                    errorMessage.textContent = data.detail || 'Error al iniciar sesión';
+                    errorMessage.style.display = 'block';
+
+                    // Resetear botón
+                    loginBtn.querySelector('span').style.display = 'inline';
+                    loginBtn.querySelector('i').style.display = 'none';
+                    loginBtn.disabled = false;
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Error de conexión. Intenta de nuevo.';
+                errorMessage.style.display = 'block';
+
+                // Resetear botón
+                loginBtn.querySelector('span').style.display = 'inline';
+                loginBtn.querySelector('i').style.display = 'none';
+                loginBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
