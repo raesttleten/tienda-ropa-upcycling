@@ -1,99 +1,50 @@
-# ThriftStoreCol - Moda Vintage Sostenible
+# ThriftStoreCol
 
 ## Descripción
-ThriftStoreCol es una aplicación web de e-commerce enfocada en moda vintage y sostenible, desarrollada con **FastAPI**, **SQLAlchemy** y **Jinja2**. La plataforma permite:
-
-- Visualizar productos destacados y por categoría.
-- Realizar búsquedas de productos.
-- Gestionar un carrito de compras.
-- Registrar y autenticar usuarios.
-- Administrar productos desde un panel de administrador.
-- Consultar métricas de sostenibilidad y consumo mediante un dashboard interactivo.
+ThriftStoreCol es una plataforma de comercio electrónico de moda vintage y sostenible. Permite explorar productos por categoría, agregar al carrito, realizar un checkout simulado y gestionar productos desde un panel administrativo. Incluye dashboard con métricas de sostenibilidad.
 
 ## Tecnologías
-- **Backend:** Python 3.11, FastAPI, SQLAlchemy (async), Passlib para hashing de contraseñas.
-- **Base de datos:** SQLite (local) o PostgreSQL (deploy en Railway/Heroku).
-- **Frontend:** Jinja2 Templates, HTML5, CSS3, JavaScript, ApexCharts para gráficos.
-- **Dependencias adicionales:** `bcrypt`, `uvicorn`, `psycopg2-binary` (para PostgreSQL en Windows).
+- Backend: FastAPI, SQLAlchemy (Async)
+- Base de datos: SQLite (local) o PostgreSQL (producción)
+- Frontend: HTML, CSS, JS, Jinja2 Templates
+- Gráficos: ApexCharts
 
-## Instalación Local
-
-1. **Clonar el repositorio**
-
+## Instalación y ejecución
+1. Clonar el repositorio:
+bash
 git clone <URL_DEL_REPOSITORIO>
-cd <NOMBRE_DEL_REPOSITORIO>
-Crear entorno virtual
+cd <NOMBRE_DEL_PROYECTO>
+Crear y activar entorno virtual:
 
 bash
 Copiar código
 python -m venv venv
-Activar entorno virtual
-
-Windows:
-
-bash
-Copiar código
+# Windows
 venv\Scripts\activate
-Linux / MacOS:
-
-bash
-Copiar código
+# Linux/macOS
 source venv/bin/activate
-Instalar dependencias
+Instalar dependencias:
 
 bash
 Copiar código
 pip install -r requirements.txt
-Configurar base de datos
+Configurar base de datos:
 
-Para SQLite (local):
+SQLite: se crea automáticamente.
 
-La app crea automáticamente database.db al inicializar.
+PostgreSQL: modificar DATABASE_URL en database.py.
 
-Para PostgreSQL (deploy):
-
-Instalar psycopg2-binary:
-
-bash
-Copiar código
-pip install psycopg2-binary
-Cambiar la URL de conexión en database.py:
-
-python
-Copiar código
-DATABASE_URL = "postgresql+asyncpg://usuario:contraseña@host:puerto/nombre_db"
-Inicializar modelos y base de datos
-
-La app se encargará de crear las tablas al iniciar.
-
-Solo asegúrate de que init_models() se ejecute antes de correr la app.
-
-Ejecutar la aplicación
+Iniciar la aplicación:
 
 bash
 Copiar código
 uvicorn main:app --reload
-Accede en tu navegador a http://127.0.0.1:8000/.
+Abrir en navegador:
 
-Uso
-Inicio: Muestra productos destacados, galería y dashboard de métricas.
+cpp
+Copiar código
+http://127.0.0.1:8000/
+https://tienda-ropa-upcycling-production-3f81.up.railway.app
 
-Categorías: Filtra productos por tipo (Camisas, Pantalones, Faldas, etc.).
-
-Producto: Visualiza detalles de cada producto y productos relacionados.
-
-Carrito: Agrega productos, consulta total y realiza checkout simulado.
-
-Administración: Usuarios con rol de admin pueden agregar productos y ver métricas generales.
-
-Autenticación: Registro, login y logout con manejo de cookies.
-
-
-
-
-La aplicación requiere que el navegador soporte cookies para autenticación y carrito.
-
-La base de datos local puede usarse para pruebas; para producción se recomienda PostgreSQL.
-
-Licencia
-Este proyecto está bajo licencia MIT.
+Imagenes:
+https://co.pinterest.com/raesttleten/closetsale/
