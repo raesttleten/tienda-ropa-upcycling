@@ -64,3 +64,4 @@ class Usuario(Base):
     contrasena = Column(String, nullable=False)
     es_admin = Column(Boolean, default=False)
 
+

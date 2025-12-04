@@ -504,3 +504,4 @@ import models
 # Esto crea todas las tablas que no existan aún
 models.Base.metadata.create_all(bind=engine)
 
+
