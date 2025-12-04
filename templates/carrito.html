@@ -11,28 +11,249 @@
     <header>
         <nav>
             <a href="/" class="logo">thriftstorecol</a>
+
             <div class="nav-icons">
                 <a href="/" title="Inicio">
                     <i class="fas fa-home"></i>
+                </a>
+                <a href="/carrito" title="Carrito" class="active">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span id="carrito-badge" class="badge-carrito" style="display: none;">0</span>
+                </a>
+                <a href="/mi-cuenta" title="Mi Cuenta" id="miCuentaLink">
+                    <i class="fas fa-user"></i>
                 </a>
             </div>
         </nav>
     </header>
 
-    <main class="carrito-container">
-        <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; text-align: center; margin-bottom: 3rem; color: var(--cream);">
-            Tu Carrito
-        </h2>
+    <div class="categorias">
+        <div class="categorias-inner">
+            <a href="/categoria/Camisas" class="categoria-btn">Camisas</a>
+            <a href="/categoria/Pantalones" class="categoria-btn">Pantalones</a>
+            <a href="/categoria/Faldas" class="categoria-btn">Faldas</a>
+            <a href="/categoria/Bolsos" class="categoria-btn">Bolsos</a>
+            <a href="/categoria/Accesorios" class="categoria-btn">Accesorios</a>
+        </div>
+    </div>
 
-        <div id="carrito-contenido">
-            <p style="text-align: center; color: var(--light-gray); padding: 3rem;">
-                Tu carrito está vacío
-            </p>
+    <main>
+        <div class="carrito-container">
+            <h2><i class="fas fa-shopping-bag"></i> Mi Carrito</h2>
+
+            <div id="loading" class="loading-carrito" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando carrito...</p>
+            </div>
+
+            <div id="carrito-vacio" class="carrito-vacio" style="display: none;">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>Tu carrito está vacío</h3>
+                <p>Descubre nuestras piezas únicas de moda sostenible</p>
+                <a href="/" class="btn-primary">Explorar productos</a>
+            </div>
+
+            <div id="carrito-contenido" style="display: none;">
+                <div class="carrito-items" id="carrito-items">
+                    <!-- Items del carrito se cargan aquí dinámicamente -->
+                </div>
+
+                <div class="carrito-resumen">
+                    <h3>Resumen del Pedido</h3>
+                    <div class="resumen-linea">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">$0 COP</span>
+                    </div>
+                    <div class="resumen-linea">
+                        <span>Envío:</span>
+                        <span>Calculado en checkout</span>
+                    </div>
+                    <div class="resumen-total">
+                        <span>Total:</span>
+                        <span id="total">$0 COP</span>
+                    </div>
+                    <a href="/checkout" class="btn-primary btn-checkout">
+                        <i class="fas fa-lock"></i> Proceder al Pago
+                    </a>
+                    <button onclick="vaciarCarrito()" class="btn-vaciar">
+                        <i class="fas fa-trash"></i> Vaciar Carrito
+                    </button>
+                </div>
+            </div>
+
+            <div id="no-autenticado" class="carrito-vacio" style="display: none;">
+                <i class="fas fa-user-lock"></i>
+                <h3>Debes iniciar sesión</h3>
+                <p>Para ver tu carrito, primero inicia sesión o crea una cuenta</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <a href="/login" class="btn-primary">Iniciar Sesión</a>
+                    <a href="/registro" class="btn-secondary">Crear Cuenta</a>
+                </div>
+            </div>
         </div>
     </main>
 
     <footer>
         <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
+
+    <script>
+        let carritoData = null;
+
+        // Formatear precio
+        function formatearPrecio(valor) {
+            return new Intl.NumberFormat('es-CO').format(valor);
+        }
+
+        // Cargar carrito
+        async function cargarCarrito() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('carrito-vacio').style.display = 'none';
+            document.getElementById('carrito-contenido').style.display = 'none';
+            document.getElementById('no-autenticado').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/carrito');
+
+                if (response.status === 401) {
+                    // No autenticado
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('no-autenticado').style.display = 'block';
+                    document.getElementById('miCuentaLink').href = '/login';
+                    return;
+                }
+
+                const data = await response.json();
+                carritoData = data;
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.items.length === 0) {
+                    document.getElementById('carrito-vacio').style.display = 'block';
+                } else {
+                    mostrarCarrito(data);
+                }
+            } catch (error) {
+                console.error('Error al cargar carrito:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('no-autenticado').style.display = 'block';
+            }
+        }
+
+        // Mostrar carrito
+        function mostrarCarrito(data) {
+            const itemsContainer = document.getElementById('carrito-items');
+            itemsContainer.innerHTML = '';
+
+            data.items.forEach(item => {
+                const itemHTML = `
+                    <div class="carrito-item" data-item-id="${item.id}">
+                        <div class="item-imagen">
+                            <img src="${item.producto.imagen_url}" alt="${item.producto.nombre}">
+                        </div>
+                        <div class="item-info">
+                            <h4>${item.producto.nombre}</h4>
+                            <p class="item-precio">$${formatearPrecio(item.producto.precio)} COP</p>
+                            <p class="item-stock">Stock disponible: ${item.producto.stock}</p>
+                        </div>
+                        <div class="item-cantidad">
+                            <button onclick="actualizarCantidad(${item.id}, ${item.cantidad - 1}, ${item.producto.stock})"
+                                    ${item.cantidad <= 1 ? 'disabled' : ''}>
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span>${item.cantidad}</span>
+                            <button onclick="actualizarCantidad(${item.id}, ${item.cantidad + 1}, ${item.producto.stock})"
+                                    ${item.cantidad >= item.producto.stock ? 'disabled' : ''}>
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="item-subtotal">
+                            <p>$${formatearPrecio(item.subtotal)} COP</p>
+                        </div>
+                        <button class="item-eliminar" onclick="eliminarItem(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                itemsContainer.innerHTML += itemHTML;
+            });
+
+            document.getElementById('subtotal').textContent = `$${formatearPrecio(data.total)} COP`;
+            document.getElementById('total').textContent = `$${formatearPrecio(data.total)} COP`;
+            document.getElementById('carrito-contenido').style.display = 'block';
+
+            // Actualizar badge
+            const badge = document.getElementById('carrito-badge');
+            if (data.total_items > 0) {
+                badge.textContent = data.total_items;
+                badge.style.display = 'block';
+            }
+        }
+
+        // Actualizar cantidad
+        async function actualizarCantidad(itemId, nuevaCantidad, stockDisponible) {
+            if (nuevaCantidad < 1 || nuevaCantidad > stockDisponible) return;
+
+            try {
+                const formData = new FormData();
+                formData.append('cantidad', nuevaCantidad);
+
+                const response = await fetch(`/api/carrito/actualizar/${itemId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    cargarCarrito();
+                } else {
+                    const data = await response.json();
+                    alert(data.detail || 'Error al actualizar cantidad');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al actualizar cantidad');
+            }
+        }
+
+        // Eliminar item
+        async function eliminarItem(itemId) {
+            if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
+
+            try {
+                const response = await fetch(`/api/carrito/eliminar/${itemId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    cargarCarrito();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar producto');
+            }
+        }
+
+        // Vaciar carrito
+        async function vaciarCarrito() {
+            if (!confirm('¿Seguro que quieres vaciar el carrito?')) return;
+
+            try {
+                const response = await fetch('/api/carrito/vaciar', {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    cargarCarrito();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al vaciar carrito');
+            }
+        }
+
+        // Cargar al iniciar
+        cargarCarrito();
+    </script>
 </body>
 </html>
