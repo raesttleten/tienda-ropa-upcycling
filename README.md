@@ -39,12 +39,20 @@ pip install -r requirements.txt
 4.	Ejecutar la aplicación:
 python main.py
 
-Abrir en el navegador: http://127.0.0.1:8000
+Abrir en el navegador: 
+https://tienda-ropa-upcycling-production-3f81.up.railway.app/
 
 
 Recursos Adicionales⋆˚꩜｡
-	•	Copiar código: http://127.0.0.1:8000/https://tienda-ropa-upcycling-production-3f81.up.railway.app￼
-	•	Imágenes e inspiración: Pinterest Closet Sale￼
+	•	Prendas: 
+	1. https://pin.it/1HqM7HGnV
+	2. https://pin.it/zI7J96Gw1
+	3. https://pin.it/7HYTzYwhw
+	4. https://pin.it/1914tcvQN
+	5. https://pin.it/2us84F2R4
+	6. https://pin.it/1fnKVGumB
+	7. https://pin.it/4hLKqyMOT
+	8. https://pin.it/1msfKB7MU
 
 Funcionalidades(˶˃ ᵕ ˂˶)
 	•	Visualización de productos destacados y filtrado por categoría
