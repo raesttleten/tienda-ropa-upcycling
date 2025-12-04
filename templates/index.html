@@ -22,14 +22,12 @@
                 <a href="/" title="Inicio">
                     <i class="fas fa-home"></i>
                 </a>
-                <a href="/favoritos" title="Favoritos">
-                    <i class="fas fa-heart"></i>
-                </a>
                 <a href="/carrito" title="Carrito">
                     <i class="fas fa-shopping-bag"></i>
+                    <span id="carrito-badge" class="badge-carrito" style="display: none;">0</span>
                 </a>
-                <a href="/admin" title="Admin">
-                    <i class="fas fa-user-shield"></i>
+                <a href="#" title="Mi Cuenta" id="miCuentaLink">
+                    <i class="fas fa-user"></i>
                 </a>
             </div>
         </nav>
@@ -75,6 +73,9 @@
                         <p class="precio">${{ producto.precio|format_cop }} COP</p>
 
                         <div class="producto-actions">
+                            <button type="button" onclick="agregarAlCarrito('{{ producto.id }}')" class="btn-add-cart">
+                                <i class="fas fa-shopping-bag"></i> Agregar
+                            </button>
                             <a href="/producto/{{ producto.id }}" class="btn-primary">Ver Detalles</a>
                         </div>
                     </div>
@@ -88,102 +89,188 @@
             {% endif %}
         </section>
 
-<!-- ✅ SECCIONES INFORMATIVAS INTERCALADAS CON IMÁGENES -->
-<section class="info-productos-section">
-    <!-- Fila 1: Imagen izquierda + Info derecha -->
-    <div class="info-fila">
-        <div class="info-imagen">
-            <img src="/static/images/info-upcycling.jpg" alt="¿Qué es el Upcycling?" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=600&fit=crop'">
-        </div>
-        <div class="info-box">
-            <h3>¿Qué es el Upcycling?</h3>
-            <p>El upcycling es el arte de transformar prendas y materiales descartados en piezas únicas de mayor valor. A diferencia del reciclaje tradicional, el upcycling mantiene la calidad original mientras crea algo completamente nuevo y exclusivo.</p>
-            <p>Cada prenda upcycling cuenta una historia de creatividad, sostenibilidad y moda consciente. Es dar una segunda vida con estilo.</p>
-        </div>
-    </div>
+        <!-- Secciones Informativas Intercaladas -->
+        <section class="info-productos-section">
+            <!-- Fila 1: Imagen izquierda + Info derecha -->
+            <div class="info-fila">
+                <div class="info-imagen">
+                    <img src="/static/images/info-upcycling.jpg" alt="¿Qué es el Upcycling?" onerror="this.src='https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=600&fit=crop'">
+                </div>
+                <div class="info-box">
+                    <h3>¿Qué es el Upcycling?</h3>
+                    <p>El upcycling es el arte de transformar prendas y materiales descartados en piezas únicas de mayor valor. A diferencia del reciclaje tradicional, el upcycling mantiene la calidad original mientras crea algo completamente nuevo y exclusivo.</p>
+                    <p>Cada prenda upcycling cuenta una historia de creatividad, sostenibilidad y moda consciente. Es dar una segunda vida con estilo.</p>
+                </div>
+            </div>
 
-    <!-- Fila 2: Info izquierda + Imagen derecha -->
-    <div class="info-fila reverse">
-        <div class="info-box">
-            <h3>Origen de la Moda Upcycling</h3>
-            <p>La moda upcycling nació como respuesta al impacto ambiental de la industria textil. Diseñadores visionarios comenzaron a reimaginar prendas vintage, dándoles nueva vida y propósito.</p>
-            <p>Hoy, el upcycling representa un movimiento global que combina conciencia ambiental, creatividad artística y expresión individual. Cada pieza es una declaración contra el fast fashion.</p>
-        </div>
-        <div class="info-imagen">
-            <img src="/static/images/info-origen.jpg" alt="Origen de la Moda Upcycling" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
-        </div>
-    </div>
-</section>
+            <!-- Fila 2: Info izquierda + Imagen derecha -->
+            <div class="info-fila reverse">
+                <div class="info-box">
+                    <h3>Origen de la Moda Upcycling</h3>
+                    <p>La moda upcycling nació como respuesta al impacto ambiental de la industria textil. Diseñadores visionarios comenzaron a reimaginar prendas vintage, dándoles nueva vida y propósito.</p>
+                    <p>Hoy, el upcycling representa un movimiento global que combina conciencia ambiental, creatividad artística y expresión individual. Cada pieza es una declaración contra el fast fashion.</p>
+                </div>
+                <div class="info-imagen">
+                    <img src="/static/images/info-origen.jpg" alt="Origen de la Moda Upcycling" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
+                </div>
+            </div>
+        </section>
 
-<!-- Dashboard de Sostenibilidad -->
-<section class="dashboard-section">
-    <h2>Impacto de la Moda Sostenible</h2>
+        <!-- Dashboard de Sostenibilidad -->
+        <section class="dashboard-section">
+            <h2>Impacto de la Moda Sostenible</h2>
 
-    <div class="metricas-cards">
-        <div class="metrica-card">
-            <div class="metrica-numero" id="total-prendas">0</div>
-            <p>Prendas Upcycling</p>
-        </div>
-        <div class="metrica-card">
-            <div class="metrica-numero" id="piezas-unicas">0</div>
-            <p>Piezas Únicas</p>
-        </div>
-        <div class="metrica-card">
-            <div class="metrica-numero" id="co2-ahorrado">0</div>
-            <p>Kg CO2 Ahorrados</p>
-        </div>
-        <div class="metrica-card">
-            <div class="metrica-numero" id="agua-ahorrada">0</div>
-            <p>Litros de Agua Ahorrados</p>
-        </div>
-    </div>
+            <div class="metricas-cards">
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="total-prendas">0</div>
+                    <p>Prendas Upcycling</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="piezas-unicas">0</div>
+                    <p>Piezas Únicas</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="co2-ahorrado">0</div>
+                    <p>Kg CO2 Ahorrados</p>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-numero" id="agua-ahorrada">0</div>
+                    <p>Litros de Agua Ahorrados</p>
+                </div>
+            </div>
 
-    <div class="dashboard-grid">
-        <div class="chart-container">
-            <h4>Impacto Ambiental</h4>
-            <div id="chart-impacto"></div>
+            <div class="dashboard-grid">
+                <div class="chart-container">
+                    <h4>Impacto Ambiental</h4>
+                    <div id="chart-impacto"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h4>Distribución por Categoría</h4>
+                    <div id="chart-categorias"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h4>Consumo Sostenible Mensual</h4>
+                    <div id="chart-consumo"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Galería Horizontal (3 Imágenes) -->
+    <section class="galeria-horizontal">
+        <div class="galeria-grid">
+            <div class="galeria-item">
+                <img src="/static/images/galeria-1.jpg" alt="Moda Sostenible" onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop'">
+            </div>
+            <div class="galeria-item">
+                <img src="/static/images/galeria-2.jpg" alt="Upcycling Fashion" onerror="this.src='https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&h=600&fit=crop'">
+            </div>
+            <div class="galeria-item">
+                <img src="/static/images/galeria-3.jpg" alt="Vintage Style" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=600&fit=crop'">
+            </div>
         </div>
 
-        <div class="chart-container">
-            <h4>Distribución por Categoría</h4>
-            <div id="chart-categorias"></div>
+        <div class="drops-text">
+            <h2>DROP CADA SEMANA</h2>
+            <p>Nuevas piezas únicas todos los viernes</p>
         </div>
-
-        <div class="chart-container">
-            <h4>Consumo Sostenible Mensual</h4>
-            <div id="chart-consumo"></div>
-        </div>
-    </div>
-</section>
-</main>
-
-<!-- ✅ GALERÍA HORIZONTAL (3 IMÁGENES) -->
-<section class="galeria-horizontal">
-    <div class="galeria-grid">
-        <div class="galeria-item">
-            <img src="/static/images/galeria1.jpg">
-        </div>
-        <div class="galeria-item">
-            <img src="/static/images/galeria-2.jpg">
-        </div>
-        <div class="galeria-item">
-            <img src="/static/images/galeria3.jpg">
-        </div>
-    </div>
-
-    <div class="drops-text">
-        <h2>DROP CADA SEMANA</h2>
-        <p>Nuevas piezas únicas todos los viernes</p>
-    </div>
-</section>
+    </section>
 
     <footer>
         <p>thriftstorecol</p>
-        <p style="margin-top: 0.5rem;">Moda · Sostenible · Único</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
 
     <script>
-        // Cargar métricas generales
+        // ==================== VERIFICAR AUTENTICACIÓN ====================
+        async function verificarAutenticacion() {
+            try {
+                const response = await fetch('/api/auth/usuario-actual');
+                const data = await response.json();
+
+                if (data.autenticado) {
+                    document.getElementById('miCuentaLink').href = '/mi-cuenta';
+
+                    // Cargar cantidad de items en carrito
+                    const carritoResponse = await fetch('/api/carrito');
+                    if (carritoResponse.ok) {
+                        const carritoData = await carritoResponse.json();
+                        if (carritoData.total_items > 0) {
+                            const badge = document.getElementById('carrito-badge');
+                            badge.textContent = carritoData.total_items;
+                            badge.style.display = 'block';
+                        }
+                    }
+                } else {
+                    document.getElementById('miCuentaLink').href = '/login';
+                }
+            } catch (error) {
+                document.getElementById('miCuentaLink').href = '/login';
+            }
+        }
+
+        // ==================== AGREGAR AL CARRITO ====================
+        async function agregarAlCarrito(productoId) {
+            try {
+                const formData = new FormData();
+                formData.append('producto_id', productoId);
+                formData.append('cantidad', 1);
+
+                const response = await fetch('/api/carrito/agregar', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Actualizar badge del carrito
+                    const badge = document.getElementById('carrito-badge');
+                    badge.textContent = data.total_items;
+                    badge.style.display = 'block';
+
+                    // Mostrar notificación
+                    mostrarNotificacion('¡Producto agregado al carrito!', 'success');
+                } else if (response.status === 401) {
+                    // No autenticado
+                    mostrarNotificacion('Debes iniciar sesión para agregar productos', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                } else {
+                    mostrarNotificacion(data.detail || 'Error al agregar producto', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarNotificacion('Error al agregar producto', 'error');
+            }
+        }
+
+        // ==================== NOTIFICACIONES ====================
+        function mostrarNotificacion(mensaje, tipo) {
+            // Crear elemento de notificación
+            const notif = document.createElement('div');
+            notif.className = `notificacion notificacion-${tipo}`;
+            notif.innerHTML = `
+                <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${mensaje}</span>
+            `;
+
+            document.body.appendChild(notif);
+
+            // Animar entrada
+            setTimeout(() => notif.classList.add('show'), 100);
+
+            // Eliminar después de 3 segundos
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // ==================== DASHBOARD (código existente) ====================
         fetch('/api/dashboard/metricas-generales')
             .then(res => res.json())
             .then(data => {
@@ -193,7 +280,6 @@
                 document.getElementById('agua-ahorrada').textContent = data.litros_agua_ahorrados.toLocaleString();
             });
 
-        // Gráfico de Impacto Ambiental
         fetch('/api/dashboard/impacto-ambiental')
             .then(res => res.json())
             .then(data => {
@@ -229,7 +315,6 @@
                 chart.render();
             });
 
-        // Gráfico de Categorías
         fetch('/api/dashboard/prendas-por-categoria')
             .then(res => res.json())
             .then(data => {
@@ -251,7 +336,6 @@
                 chart.render();
             });
 
-        // Gráfico de Consumo Mensual
         fetch('/api/dashboard/consumo-mensual')
             .then(res => res.json())
             .then(data => {
@@ -289,6 +373,9 @@
                 const chart = new ApexCharts(document.querySelector("#chart-consumo"), options);
                 chart.render();
             });
+
+        // Verificar autenticación al cargar
+        verificarAutenticacion();
     </script>
 </body>
 </html>
