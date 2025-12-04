@@ -71,3 +71,64 @@
         <p>thriftstorecol</p>
         <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
     </footer>
+
+    <script>
+        const registroForm = document.getElementById('registroForm');
+        const errorMessage = document.getElementById('error-message');
+        const registroBtn = document.getElementById('registroBtn');
+
+        registroForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validar que las contraseñas coincidan
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = 'Las contraseñas no coinciden';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Mostrar loading
+            registroBtn.querySelector('span').style.display = 'none';
+            registroBtn.querySelector('i').style.display = 'inline-block';
+            registroBtn.disabled = true;
+            errorMessage.style.display = 'none';
+
+            const formData = new FormData(registroForm);
+
+            try {
+                const response = await fetch('/api/auth/registro', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Registro exitoso
+                    window.location.href = '/';
+                } else {
+                    // Error
+                    errorMessage.textContent = data.detail || 'Error al registrarse';
+                    errorMessage.style.display = 'block';
+
+                    // Resetear botón
+                    registroBtn.querySelector('span').style.display = 'inline';
+                    registroBtn.querySelector('i').style.display = 'none';
+                    registroBtn.disabled = false;
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Error de conexión. Intenta de nuevo.';
+                errorMessage.style.display = 'block';
+
+                // Resetear botón
+                registroBtn.querySelector('span').style.display = 'inline';
+                registroBtn.querySelector('i').style.display = 'none';
+                registroBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
