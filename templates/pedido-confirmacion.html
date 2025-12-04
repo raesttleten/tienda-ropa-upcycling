@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - thriftstorecol</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">thriftstorecol</a>
+            <div class="nav-icons">
+                <a href="/" title="Inicio">
+                    <i class="fas fa-home"></i>
+                </a>
+                <a href="/mi-cuenta" title="Mi Cuenta">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="confirmacion-container">
+            <div class="confirmacion-exito">
+                <div class="icono-exito">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>¡Pedido Realizado con Éxito!</h2>
+                <p class="confirmacion-mensaje">
+                    Tu pedido <strong>#{{ pedido.id }}</strong> ha sido confirmado y pagado exitosamente.
+                </p>
+            </div>
+
+            <div class="confirmacion-detalles">
+                <h3>Detalles del Pedido</h3>
+
+                <div class="detalle-seccion">
+                    <h4><i class="fas fa-info-circle"></i> Información General</h4>
+                    <div class="detalle-grid">
+                        <div class="detalle-item">
+                            <span class="detalle-label">Número de Pedido:</span>
+                            <span class="detalle-valor">#{{ pedido.id }}</span>
+                        </div>
+                        <div class="detalle-item">
+                            <span class="detalle-label">Fecha:</span>
+                            <span class="detalle-valor">{{ pedido.fecha_pedido.strftime('%d/%m/%Y %H:%M') }}</span>
+                        </div>
+                        <div class="detalle-item">
+                            <span class="detalle-label">Estado:</span>
+                            <span class="detalle-valor estado-{{ pedido.estado }}">{{ pedido.estado.upper() }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detalle-seccion">
+                    <h4><i class="fas fa-map-marker-alt"></i> Dirección de Envío</h4>
+                    <p>{{ pedido.direccion_envio }}</p>
+                    <p>{{ pedido.ciudad }}</p>
+                    <p>Tel: {{ pedido.telefono }}</p>
+                    {% if pedido.notas %}
+                    <p><strong>Notas:</strong> {{ pedido.notas }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="detalle-seccion">
+                    <h4><i class="fas fa-box"></i> Productos</h4>
+                    <div class="confirmacion-items">
+                        {% for item in pedido.items %}
+                        <div class="confirmacion-item">
+                            <div class="confirmacion-item-info">
+                                <h5>{{ item.nombre_producto }}</h5>
+                                <p>Cantidad: {{ item.cantidad }}</p>
+                                <p>Precio unitario: ${{ item.precio_unitario|format_cop }} COP</p>
+                            </div>
+                            <div class="confirmacion-item-precio">
+                                ${{ item.subtotal|format_cop }} COP
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="confirmacion-total">
+                    <span>Total Pagado:</span>
+                    <span class="total-monto">${{ pedido.total|format_cop }} COP</span>
+                </div>
+            </div>
+
+            <div class="confirmacion-acciones">
+                <a href="/mi-cuenta" class="btn-primary">
+                    <i class="fas fa-user"></i> Ver Mis Pedidos
+                </a>
+                <a href="/" class="btn-secondary">
+                    <i class="fas fa-home"></i> Volver al Inicio
+                </a>
+            </div>
+
+            <div class="confirmacion-nota">
+                <i class="fas fa-info-circle"></i>
+                <p>Recibirás una notificación cuando tu pedido sea enviado. Gracias por elegir moda sostenible.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>thriftstorecol</p>
+        <p style="margin-top: 0.5rem;">Moda Vintage · Sostenible · Única</p>
+    </footer>
+
+    <script>
+        // Animación de confetti (opcional)
+        console.log('¡Pedido confirmado! 🎉');
+    </script>
+</body>
+</html>
