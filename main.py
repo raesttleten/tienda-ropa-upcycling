@@ -1,4 +1,3 @@
-import asyncio
 import os
 from datetime import datetime
 from fastapi import FastAPI, Request, Depends, Form, Response, HTTPException
@@ -11,9 +10,6 @@ from passlib.hash import bcrypt
 
 import models
 from database import get_db, init_models
-
-# -------------------- INICIALIZAR BASE DE DATOS --------------------
-asyncio.run(init_models())
 
 # -------------------- CONFIGURACIÓN FASTAPI --------------------
 app = FastAPI()
@@ -39,6 +35,11 @@ async def admin_required(request: Request, db: AsyncSession = Depends(get_db)):
     if not usuario or not usuario.es_admin:
         raise HTTPException(status_code=403, detail="No autorizado")
     return usuario
+
+# -------------------- EVENTO STARTUP PARA CREAR TABLAS --------------------
+@app.on_event("startup")
+async def on_startup():
+    await init_models()
 
 # -------------------- DASHBOARD --------------------
 @app.get("/api/dashboard/impacto-ambiental")
@@ -265,3 +266,7 @@ async def checkout(request: Request, db: AsyncSession = Depends(get_db)):
     await db.commit()
 
     return templates.TemplateResponse("pedido_confirmacion.html", {"request": request, "total": total})
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
