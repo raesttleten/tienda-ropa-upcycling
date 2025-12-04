@@ -254,4 +254,253 @@ if __name__ == "__main__":
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
+# ==================== AUTENTICACIÓN ====================
+
+from fastapi import Response
+from passlib.hash import bcrypt
+
+@app.post("/registro")
+def registro(nombre: str = Form(...), email: str = Form(...), contraseña: str = Form(...), db: Session = Depends(get_db)):
+    hashed = bcrypt.hash(contraseña)
+    usuario = models.Usuario(nombre=nombre, email=email, contraseña=hashed)
+    db.add(usuario)
+    db.commit()
+    return RedirectResponse(url="/login", status_code=303)
+
+@app.post("/login")
+def login(response: Response, email: str = Form(...), contraseña: str = Form(...), db: Session = Depends(get_db)):
+    usuario = db.query(models.Usuario).filter(models.Usuario.email == email).first()
+    if not usuario or not bcrypt.verify(contraseña, usuario.contraseña):
+        return Response({"error": "Usuario o contraseña incorrecta"}, status_code=401)
+    response.set_cookie(key="usuario_id", value=str(usuario.id))
+    return RedirectResponse(url="/", status_code=303)
+
+@app.get("/logout")
+def logout(response: Response):
+    response.delete_cookie("usuario_id")
+    return RedirectResponse(url="/", status_code=303)
+
+@app.get("/api/auth/usuario-actual")
+def usuario_actual(request: Request, db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        return {"autenticado": False}
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == int(usuario_id)).first()
+    if not usuario:
+        return {"autenticado": False}
+    return {"autenticado": True, "nombre": usuario.nombre, "es_admin": usuario.es_admin}
+
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import Response, Form
+from passlib.hash import bcrypt
+from datetime import datetime
+
+# ===== Registro =====
+@app.post("/registro")
+def registro(nombre: str = Form(...), email: str = Form(...), contraseña: str = Form(...), db: Session = Depends(get_db)):
+    if db.query(models.Usuario).filter(models.Usuario.email == email).first():
+        return JSONResponse({"error": "Email ya registrado"}, status_code=400)
+    hashed = bcrypt.hash(contraseña)
+    usuario = models.Usuario(nombre=nombre, email=email, contraseña=hashed)
+    db.add(usuario)
+    db.commit()
+    return RedirectResponse(url="/login", status_code=303)
+
+# ===== Login =====
+@app.post("/login")
+def login(response: Response, email: str = Form(...), contraseña: str = Form(...), db: Session = Depends(get_db)):
+    usuario = db.query(models.Usuario).filter(models.Usuario.email == email).first()
+    if not usuario or not bcrypt.verify(contraseña, usuario.contraseña):
+        return JSONResponse({"error": "Usuario o contraseña incorrecta"}, status_code=401)
+    response.set_cookie(key="usuario_id", value=str(usuario.id))
+    return RedirectResponse(url="/", status_code=303)
+
+# ===== Logout =====
+@app.get("/logout")
+def logout(response: Response):
+    response.delete_cookie("usuario_id")
+    return RedirectResponse(url="/", status_code=303)
+
+# ===== Usuario Actual =====
+@app.get("/api/auth/usuario-actual")
+def usuario_actual(request: Request, db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        return {"autenticado": False}
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == int(usuario_id)).first()
+    if not usuario:
+        return {"autenticado": False}
+    return {"autenticado": True, "nombre": usuario.nombre, "es_admin": usuario.es_admin}
+
+# ===== Ver carrito =====
+@app.get("/api/carrito")
+def obtener_carrito(request: Request, db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        return {"total_items": 0, "items": []}
+
+    carrito_items = db.query(models.Carrito).filter(models.Carrito.usuario_id == int(usuario_id)).all()
+    total_items = sum([c.cantidad for c in carrito_items])
+    items = [{"producto": c.producto.nombre, "cantidad": c.cantidad, "precio": c.producto.precio} for c in carrito_items]
+    return {"total_items": total_items, "items": items}
+
+# ===== Agregar al carrito =====
+@app.post("/api/carrito/agregar")
+def agregar_carrito(request: Request, producto_id: int = Form(...), cantidad: int = Form(1), db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        return JSONResponse({"error": "No autenticado"}, status_code=401)
+    usuario_id = int(usuario_id)
+
+    item = db.query(models.Carrito).filter_by(usuario_id=usuario_id, producto_id=producto_id).first()
+    if item:
+        item.cantidad += cantidad
+    else:
+        item = models.Carrito(usuario_id=usuario_id, producto_id=producto_id, cantidad=cantidad)
+        db.add(item)
+    db.commit()
+
+    total_items = sum([c.cantidad for c in db.query(models.Carrito).filter(models.Carrito.usuario_id == usuario_id).all()])
+    return {"total_items": total_items}
+
+@app.get("/checkout", response_class=HTMLResponse)
+def checkout(request: Request, db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        return RedirectResponse(url="/login")
+    usuario_id = int(usuario_id)
+
+    carrito_items = db.query(models.Carrito).filter(models.Carrito.usuario_id == usuario_id).all()
+    total = sum([c.cantidad * c.producto.precio for c in carrito_items])
+
+    # Crear pedido simulado
+    pedido = models.Pedido(usuario_id=usuario_id, estado="confirmado", fecha=str(datetime.now()))
+    db.add(pedido)
+    db.commit()
+
+    # Limpiar carrito
+    for c in carrito_items:
+        db.delete(c)
+    db.commit()
+
+    return templates.TemplateResponse("pedido_confirmacion.html", {"request": request, "total": total})
+
+
+from fastapi import HTTPException
+
+
+def admin_required(request: Request, db: Session = Depends(get_db)):
+    usuario_id = request.cookies.get("usuario_id")
+    if not usuario_id:
+        raise HTTPException(status_code=401, detail="No autenticado")
+
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == int(usuario_id)).first()
+    if not usuario or not usuario.es_admin:
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    return usuario
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_panel(request: Request, db: Session = Depends(get_db), admin: models.Usuario = Depends(admin_required)):
+    """Panel de administrador"""
+    productos = db.query(models.Producto).all()
+    total_productos = len(productos)
+    total_stock = sum([p.stock for p in productos])
+    valor_inventario = sum([p.precio * p.stock for p in productos])
+
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "productos": productos,
+        "total_productos": total_productos,
+        "total_stock": total_stock,
+        "valor_inventario": valor_inventario
+    })
+
+
+@app.get("/admin/editar/{producto_id}", response_class=HTMLResponse)
+async def obtener_producto_editar(request: Request, producto_id: int, db: Session = Depends(get_db), admin: models.Usuario = Depends(admin_required)):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    productos = db.query(models.Producto).all()
+    total_productos = len(productos)
+    total_stock = sum([p.stock for p in productos])
+    valor_inventario = sum([p.precio * p.stock for p in productos])
+
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "productos": productos,
+        "producto_editar": producto,
+        "total_productos": total_productos,
+        "total_stock": total_stock,
+        "valor_inventario": valor_inventario
+    })
+
+
+@app.post("/admin/agregar")
+async def agregar_producto(
+        nombre: str = Form(...),
+        descripcion: str = Form(...),
+        precio: float = Form(...),
+        talla: str = Form(...),
+        categoria: str = Form(...),
+        imagen_url: str = Form(...),
+        stock: int = Form(...),
+        db: Session = Depends(get_db),
+        admin: models.Usuario = Depends(admin_required)
+):
+    nuevo_producto = models.Producto(
+        nombre=nombre,
+        descripcion=descripcion,
+        precio=precio,
+        talla=talla,
+        categoria=categoria,
+        imagen_url=imagen_url,
+        stock=stock
+    )
+    db.add(nuevo_producto)
+    db.commit()
+
+    return RedirectResponse(url="/admin", status_code=303)
+
+
+@app.post("/admin/actualizar/{producto_id}")
+async def actualizar_producto(
+        producto_id: int,
+        nombre: str = Form(...),
+        descripcion: str = Form(...),
+        precio: float = Form(...),
+        talla: str = Form(...),
+        categoria: str = Form(...),
+        imagen_url: str = Form(...),
+        stock: int = Form(...),
+        db: Session = Depends(get_db),
+        admin: models.Usuario = Depends(admin_required)
+):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if producto:
+        producto.nombre = nombre
+        producto.descripcion = descripcion
+        producto.precio = precio
+        producto.talla = talla
+        producto.categoria = categoria
+        producto.imagen_url = imagen_url
+        producto.stock = stock
+        db.commit()
+
+    return RedirectResponse(url="/admin", status_code=303)
+
+
+@app.get("/admin/eliminar/{producto_id}")
+async def eliminar_producto(producto_id: int, db: Session = Depends(get_db), admin: models.Usuario = Depends(admin_required)):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if producto:
+        db.delete(producto)
+        db.commit()
+
+    return RedirectResponse(url="/admin", status_code=303)
+
+from database import engine
+import models
+
+# Esto crea todas las tablas que no existan aún
+models.Base.metadata.create_all(bind=engine)
 
